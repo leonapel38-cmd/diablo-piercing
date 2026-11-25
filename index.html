@@ -1,1 +1,790 @@
-[https://leonapel38-cmd.github.io/diablo-piercing](https://leonapel38-cmd.github.io/diablo-piercing)
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Diablo Tattoo & Piercing Weimar – Piercing Treuekarte</title>
+  <meta name="theme-color" content="#0a0a0c" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #09090b;
+      color: #f4f4f5;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .perspective-1000 { perspective: 1000px; }
+    .preserve-3d { transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
+    .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+    .rotate-y-180 { transform: rotateY(180deg); }
+    .metallic-card {
+      background: linear-gradient(145deg, #18181b 0%, #09090b 60%, #1f1f23 100%);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.85), inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+    }
+    .stamp-active {
+      background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%);
+      box-shadow: 0 0 18px rgba(239, 68, 68, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between bg-zinc-950 text-zinc-100 selection:bg-red-500/30">
+
+  <!-- Top Header -->
+  <header class="w-full max-w-md mx-auto px-4 pt-5 pb-3 flex items-center justify-between">
+    <div class="flex items-center gap-2.5">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-red-600 to-zinc-900 border border-white/10 flex items-center justify-center font-extrabold text-sm tracking-tighter text-white shadow-lg">
+        DTP
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-zinc-300">Piercing Pass</span>
+          <span id="cloudStatusBadge" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span> Verbinde...
+          </span>
+        </div>
+        <p class="text-[11px] text-zinc-500">Nur für Piercings · Tattoos ausgeschlossen</p>
+      </div>
+    </div>
+
+    <button id="toggleAdminBtn" onclick="openPinModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-medium text-zinc-300 transition active:scale-95">
+      <svg class="w-3.5 h-3.5 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      <span>Studio-Kontrolle</span>
+    </button>
+  </header>
+
+  <!-- Main Customer View -->
+  <main id="customerView" class="w-full max-w-md mx-auto px-4 pb-8 flex-1 flex flex-col gap-4">
+    
+    <!-- Live Studio News Banner -->
+    <div id="newsBanner" class="hidden rounded-2xl bg-gradient-to-r from-red-950/60 via-zinc-900 to-zinc-900 border border-red-500/25 p-3.5 shadow-lg">
+      <div class="flex items-start gap-2.5">
+        <span class="text-base leading-none mt-0.5">📢</span>
+        <div class="flex-1">
+          <div class="flex items-center justify-between">
+            <span id="newsTag" class="text-[10px] font-bold uppercase tracking-wider text-red-400">Studio-Info</span>
+            <span id="newsDate" class="text-[10px] text-zinc-500"></span>
+          </div>
+          <p id="newsText" class="text-xs text-zinc-200 mt-1 leading-relaxed"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3D Flip Wallet Card -->
+    <div class="perspective-1000 w-full">
+      <div id="cardInner" class="preserve-3d relative w-full min-h-[430px]">
+        
+        <!-- FRONT OF CARD -->
+        <div class="backface-hidden w-full rounded-3xl metallic-card border border-white/10 p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-red-500/15 text-red-400 border border-red-500/20 mb-2">
+                  Exklusiv für Piercings
+                </span>
+                <h1 class="text-xl font-extrabold tracking-tight text-white leading-snug">
+                  Diablo Tattoo &amp; Piercing Weimar
+                </h1>
+                <p class="text-xs text-zinc-400 mt-0.5">Digitale Piercing-Treuekarte · Tattoos ausgeschlossen</p>
+              </div>
+              <button onclick="flipCard()" aria-label="Kartenrückseite anzeigen" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-zinc-300 text-sm font-serif italic transition">
+                i
+              </button>
+            </div>
+
+            <!-- Stamp Progress -->
+            <div class="mt-6">
+              <div class="flex items-center justify-between text-xs mb-3">
+                <span class="text-zinc-400 font-medium">Dein Stempelstand</span>
+                <span id="stampCounterText" class="font-bold text-white">0 / 5 Stempel</span>
+              </div>
+
+              <div id="stampsGrid" class="grid grid-cols-5 gap-2.5">
+                <!-- Stamps rendered by JS -->
+              </div>
+            </div>
+
+            <!-- Reward Box -->
+            <div class="mt-6 rounded-2xl bg-white/[0.03] border border-white/10 p-3.5">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Prämie bei 5 Stempeln</span>
+                <span id="rewardStatusBadge" class="text-[11px] font-semibold text-zinc-500">Noch 5 Piercings</span>
+              </div>
+              <p class="text-sm font-semibold text-white mt-1">
+                Gratis Piercing-Schmuckstück <span class="text-zinc-400 font-normal">oder</span> 15 € Piercing-Gutschein
+              </p>
+              <p class="text-[11px] text-zinc-500 mt-1">Gültig ausschließlich auf Piercings &amp; Piercingschmuck vor Ort in Weimar.</p>
+            </div>
+          </div>
+
+          <!-- Card Footer with Customer ID & QR -->
+          <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between gap-3">
+            <div>
+              <span class="text-[10px] uppercase tracking-wider text-zinc-500 block">Deine Karten-ID</span>
+              <span id="displayCardId" class="font-mono text-sm font-bold tracking-wider text-zinc-200">DTP-0000</span>
+              <div class="mt-1.5 flex items-center gap-1.5">
+                <span id="googleBonusStatus" class="text-[11px] text-zinc-400">Google-Bewertung: Offen</span>
+              </div>
+            </div>
+            <div onclick="flipCard()" class="bg-white p-1.5 rounded-xl cursor-pointer shadow-md active:scale-95 transition" title="Tippen zum Vergrößern">
+              <div id="miniQrCode"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BACK OF CARD -->
+        <div class="backface-hidden rotate-y-180 absolute inset-0 w-full rounded-3xl metallic-card border border-white/10 p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-red-400">Studio &amp; QR-Code</span>
+              <button onclick="flipCard()" class="px-3 py-1 rounded-full bg-white/10 hover:bg-white/15 text-xs font-medium text-white transition">
+                Zurück ↺
+              </button>
+            </div>
+
+            <div class="mt-4 flex flex-col items-center justify-center bg-white rounded-2xl p-4 shadow-inner">
+              <div id="largeQrCode"></div>
+              <span id="backCardId" class="font-mono text-xs font-bold text-zinc-900 mt-2 tracking-widest">DTP-0000</span>
+            </div>
+
+            <div class="mt-4 space-y-2 text-xs text-zinc-300">
+              <div class="flex justify-between py-1 border-b border-white/5">
+                <span class="text-zinc-500">Studio</span>
+                <span class="font-medium text-right">Diablo Tattoo &amp; Piercing Weimar</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-white/5">
+                <span class="text-zinc-500">Adresse</span>
+                <span class="font-medium text-right">Erfurter Str. 22, 99423 Weimar</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-white/5">
+                <span class="text-zinc-500">Piercing-Team</span>
+                <span class="font-medium text-right">
+                  <a href="https://www.instagram.com/piercing_by_sven" target="_blank" class="text-red-400 hover:underline">Sven Haufe (@piercing_by_sven)</a><br/>
+                  <a href="https://www.instagram.com/derpiercingknecht" target="_blank" class="text-red-400 hover:underline">Leon Apel (@derpiercingknecht)</a>
+                </span>
+              </div>
+              <div class="flex justify-between py-1">
+                <span class="text-zinc-500">Hinweis</span>
+                <span class="font-medium text-right text-zinc-400">Walk-In Piercings &amp; Termine nach Vereinbarung</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 mt-4">
+            <a href="https://www.instagram.com/diablotattooweimar" target="_blank" class="py-2 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-center text-xs font-semibold text-white transition">
+              Studio Instagram
+            </a>
+            <a href="https://www.google.com/search?q=Diablo+Tattoo+und+Piercing+Weimar+Bewertungen" target="_blank" class="py-2 px-3 rounded-xl bg-red-600/20 hover:bg-red-600/30 border border-red-500/30 text-center text-xs font-semibold text-red-300 transition">
+              Google bewerten ⭐
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Action Buttons Below Card -->
+    <div class="grid grid-cols-2 gap-2.5">
+      <a href="https://www.google.com/search?q=Diablo+Tattoo+und+Piercing+Weimar+Bewertungen" target="_blank" onclick="markGoogleClicked()" class="flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-semibold text-zinc-200 transition active:scale-95">
+        <span>⭐</span>
+        <span>Auf Google bewerten</span>
+      </a>
+      <button onclick="openInstallModal()" class="flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-semibold text-zinc-200 transition active:scale-95">
+        <span>📲</span>
+        <span>Als App speichern</span>
+      </button>
+    </div>
+
+    <button onclick="flipCard()" class="w-full py-2.5 rounded-2xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/5 text-xs font-medium text-zinc-400 transition">
+      QR-Code zum Stempeln vorzeigen / Karte drehen ↺
+    </button>
+
+    <!-- Impressum & Standort Footer -->
+    <footer class="mt-4 pt-4 border-t border-zinc-900 text-center text-[11px] text-zinc-500 space-y-1.5">
+      <p class="font-semibold text-zinc-400">Standort &amp; Impressum</p>
+      <p>Diablo Tattoo &amp; Piercing Weimar · Erfurter Str. 22, 99423 Weimar, Thüringen</p>
+      <p>
+        Ansprechpartner Piercing:
+        <a href="https://www.instagram.com/piercing_by_sven" target="_blank" class="text-zinc-300 hover:text-red-400 underline">Sven Haufe (@piercing_by_sven)</a>
+        &amp;
+        <a href="https://www.instagram.com/derpiercingknecht" target="_blank" class="text-zinc-300 hover:text-red-400 underline">Leon Apel (@derpiercingknecht)</a>
+      </p>
+      <p>
+        Studio-Instagram:
+        <a href="https://www.instagram.com/diablotattooweimar" target="_blank" class="text-zinc-300 hover:text-red-400 underline">@diablotattooweimar</a>
+      </p>
+      <p class="text-[10px] text-zinc-600 pt-1">Treueprogramm gilt ausschließlich für Piercing-Leistungen. Tattoos sind ausgeschlossen.</p>
+    </footer>
+  </main>
+
+  <!-- ADMIN / STUDIO CONTROL VIEW -->
+  <section id="adminView" class="hidden w-full max-w-md mx-auto px-4 pb-10 flex-1 flex flex-col gap-4">
+    <div class="flex items-center justify-between bg-zinc-900 border border-zinc-800 rounded-2xl p-3">
+      <div>
+        <span class="text-xs font-bold text-red-400 uppercase tracking-wider">Diensthandy-Modus</span>
+        <h2 class="text-sm font-bold text-white">Diablo Piercing Kontrolle</h2>
+      </div>
+      <button onclick="exitAdminMode()" class="px-3 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-semibold text-zinc-200">
+        Schließen ✕
+      </button>
+    </div>
+
+    <!-- Admin Tabs -->
+    <div class="grid grid-cols-4 gap-1.5 bg-zinc-900 p-1.5 rounded-2xl border border-zinc-800 text-xs font-semibold">
+      <button onclick="switchAdminTab('scan')" id="tab-scan" class="py-2 rounded-xl bg-red-600 text-white transition">📷 Scan</button>
+      <button onclick="switchAdminTab('customers')" id="tab-customers" class="py-2 rounded-xl text-zinc-400 hover:text-white transition">👥 Kunden</button>
+      <button onclick="switchAdminTab('news')" id="tab-news" class="py-2 rounded-xl text-zinc-400 hover:text-white transition">📢 News</button>
+      <button onclick="switchAdminTab('counter')" id="tab-counter" class="py-2 rounded-xl text-zinc-400 hover:text-white transition">🪧 Tresen</button>
+    </div>
+
+    <!-- TAB 1: SCAN & STAMP -->
+    <div id="panel-scan" class="space-y-4">
+      <div class="rounded-2xl bg-zinc-900 border border-zinc-800 p-4">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-bold text-zinc-300">Kunden-QR-Code scannen</span>
+          <button id="startScannerBtn" onclick="toggleQrScanner()" class="px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 text-xs font-bold text-white transition">
+            Kamera starten
+          </button>
+        </div>
+        <div id="qrReader" class="w-full rounded-xl overflow-hidden bg-black"></div>
+
+        <div class="mt-3 pt-3 border-t border-zinc-800">
+          <label class="text-[11px] text-zinc-400 block mb-1.5">Oder Karten-ID manuell eingeben:</label>
+          <div class="flex gap-2">
+            <input id="manualCardInput" type="text" placeholder="z. B. DTP-4821" class="flex-1 bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white uppercase focus:outline-none focus:border-red-500" />
+            <button onclick="loadCardForAdmin(document.getElementById('manualCardInput').value.trim().toUpperCase())" class="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-white">
+              Laden
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Selected Customer Card Control -->
+      <div id="adminSelectedCardBox" class="hidden rounded-2xl bg-zinc-900 border border-red-500/30 p-4 space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-[10px] uppercase tracking-wider text-zinc-500">Aktive Kundenkarte</span>
+            <h3 id="adminCardTitle" class="text-base font-extrabold text-white font-mono">DTP-0000</h3>
+          </div>
+          <span id="adminCardStampsBadge" class="px-3 py-1 rounded-full bg-red-500/15 text-red-400 text-xs font-bold">0 / 5 Stempel</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="adminAddStamp(1)" class="py-3 px-3 rounded-xl bg-red-600 hover:bg-red-500 text-xs font-bold text-white shadow-lg transition active:scale-95">
+            +1 Piercing-Stempel
+          </button>
+          <button onclick="adminAddStamp(-1)" class="py-3 px-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-semibold text-zinc-300 transition active:scale-95">
+            -1 Korrektur
+          </button>
+        </div>
+
+        <div class="pt-2 border-t border-zinc-800 space-y-2">
+          <button id="adminGoogleBonusBtn" onclick="adminGrantGoogleBonus()" class="w-full py-2.5 px-3 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-xs font-bold text-amber-300 transition">
+            ⭐ Google-Bewertung bestätigen (+1 Bonus-Stempel)
+          </button>
+
+          <div id="adminRedeemBox" class="hidden grid grid-cols-2 gap-2 pt-2">
+            <button onclick="adminRedeemReward('Gratis Piercing-Schmuckstück')" class="py-2.5 px-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-xs font-bold text-white transition">
+              💎 Gratis Schmuck einlösen
+            </button>
+            <button onclick="adminRedeemReward('15 € Piercing-Gutschein')" class="py-2.5 px-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-xs font-bold text-white transition">
+              🎟️ 15 € Gutschein einlösen
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: ALL CUSTOMERS -->
+    <div id="panel-customers" class="hidden rounded-2xl bg-zinc-900 border border-zinc-800 p-4 space-y-3">
+      <div class="flex items-center justify-between">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400">Registrierte Karten</h3>
+        <span id="totalCustomersCount" class="text-xs font-bold text-white">0 Karten</span>
+      </div>
+      <div id="customersList" class="space-y-2 max-h-80 overflow-y-auto">
+        <p class="text-xs text-zinc-500">Lade Kundenkarten...</p>
+      </div>
+    </div>
+
+    <!-- TAB 3: BROADCAST NEWS -->
+    <div id="panel-news" class="hidden rounded-2xl bg-zinc-900 border border-zinc-800 p-4 space-y-3">
+      <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400">Live-Nachricht an alle Kundenkarten</h3>
+      <div>
+        <label class="text-[11px] text-zinc-400 block mb-1">Kategorie</label>
+        <select id="newsTagInput" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white">
+          <option value="Walk-In Piercing">Walk-In Piercing</option>
+          <option value="Freie Termine">Freie Termine</option>
+          <option value="Neuer Schmuck">Neuer Schmuck</option>
+          <option value="Studio-Info">Studio-Info</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-[11px] text-zinc-400 block mb-1">Nachrichtentext</label>
+        <textarea id="newsTextInput" rows="3" placeholder="z. B. Heute noch spontane Walk-In Slots für Piercings bei Sven & Leon frei! Kommt vorbei in der Erfurter Str. 22." class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500"></textarea>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="publishNews()" class="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-xs font-bold text-white transition">
+          Veröffentlichen
+        </button>
+        <button onclick="clearNews()" class="px-4 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-semibold text-zinc-300 transition">
+          Löschen
+        </button>
+      </div>
+    </div>
+
+    <!-- TAB 4: COUNTER QR & PIN -->
+    <div id="panel-counter" class="hidden rounded-2xl bg-zinc-900 border border-zinc-800 p-4 space-y-4">
+      <div class="text-center">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-300">Tresen-QR-Code für neue Kunden</h3>
+        <p class="text-[11px] text-zinc-500 mt-1">Diesen Code ausdrucken und am Empfang auslegen</p>
+        <div class="mt-3 inline-block bg-white p-4 rounded-2xl">
+          <div id="counterQrCode"></div>
+        </div>
+        <p id="currentAppUrl" class="text-[10px] text-zinc-500 mt-2 break-all"></p>
+      </div>
+
+      <div class="pt-4 border-t border-zinc-800">
+        <label class="text-xs font-bold text-zinc-300 block mb-1.5">Studio-PIN ändern</label>
+        <div class="flex gap-2">
+          <input id="newPinInput" type="password" maxlength="6" placeholder="Neue PIN (z. B. 4812)" class="flex-1 bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white" />
+          <button onclick="updateStudioPin()" class="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-white">
+            Speichern
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PIN MODAL -->
+  <div id="pinModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="w-full max-w-xs rounded-3xl bg-zinc-900 border border-zinc-800 p-6 space-y-4 shadow-2xl">
+      <div class="text-center">
+        <h3 class="text-base font-extrabold text-white">Studio-Kontrolle</h3>
+        <p class="text-xs text-zinc-400 mt-1">Bitte Studio-PIN eingeben</p>
+      </div>
+      <input id="pinInput" type="password" inputmode="numeric" maxlength="6" placeholder="••••" class="w-full text-center tracking-[0.5em] text-lg font-bold bg-zinc-950 border border-zinc-800 rounded-2xl py-3 text-white focus:outline-none focus:border-red-500" />
+      <p id="pinError" class="hidden text-center text-xs text-red-400 font-medium">Falsche PIN</p>
+      <div class="grid grid-cols-2 gap-2">
+        <button onclick="closePinModal()" class="py-2.5 rounded-xl bg-zinc-800 text-xs font-semibold text-zinc-300">Abbrechen</button>
+        <button onclick="verifyPin()" class="py-2.5 rounded-xl bg-red-600 text-xs font-bold text-white">Entsperren</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSTALL MODAL -->
+  <div id="installModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="w-full max-w-sm rounded-3xl bg-zinc-900 border border-zinc-800 p-6 space-y-4 shadow-2xl">
+      <h3 class="text-base font-extrabold text-white">Karte als App speichern</h3>
+      <div class="space-y-3 text-xs text-zinc-300 leading-relaxed">
+        <div class="p-3 rounded-2xl bg-zinc-950 border border-zinc-800">
+          <p class="font-bold text-white mb-1">🍎 iPhone (Safari)</p>
+          <p>Tippe unten auf das <strong>Teilen-Symbol</strong> (Viereck mit Pfeil nach oben) und wähle <strong>„Zum Home-Bildschirm“</strong>.</p>
+        </div>
+        <div class="p-3 rounded-2xl bg-zinc-950 border border-zinc-800">
+          <p class="font-bold text-white mb-1">🤖 Android (Chrome)</p>
+          <p>Tippe oben rechts auf das <strong>Drei-Punkte-Menü</strong> und wähle <strong>„Zum Startbildschirm hinzufügen“</strong>.</p>
+        </div>
+      </div>
+      <button onclick="closeInstallModal()" class="w-full py-2.5 rounded-xl bg-red-600 text-xs font-bold text-white">Verstanden</button>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden px-4 py-2.5 rounded-full bg-zinc-800 border border-zinc-700 text-xs font-semibold text-white shadow-xl"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, onSnapshot, collection, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBj0BYGvbAqbwASEE9n-LL9aqh32kBIueI",
+      authDomain: "diablo-piercing-weimar.firebaseapp.com",
+      projectId: "diablo-piercing-weimar",
+      storageBucket: "diablo-piercing-weimar.firebasestorage.app",
+      messagingSenderId: "857043777731",
+      appId: "1:857043777731:web:2b643d85ebf59306928a76",
+      measurementId: "G-Z51G8N19DQ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let studioPin = "2200";
+    let isCloudConnected = false;
+    let selectedAdminCardId = null;
+    let selectedAdminCardData = null;
+    let html5QrScanner = null;
+
+    // Generate or retrieve unique customer card ID
+    let myCardId = localStorage.getItem("dtp_piercing_card_id");
+    if (!myCardId) {
+      const randomNum = Math.floor(1000 + Math.random() * 9000);
+      myCardId = `DTP-${randomNum}`;
+      localStorage.setItem("dtp_piercing_card_id", myCardId);
+    }
+
+    let myCardData = JSON.parse(localStorage.getItem("dtp_piercing_card_data")) || {
+      id: myCardId,
+      stamps: 0,
+      googleBonusGranted: false,
+      googleClicked: false,
+      redeemedCount: 0,
+      updatedAt: Date.now()
+    };
+
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.classList.remove("hidden");
+      setTimeout(() => t.classList.add("hidden"), 2800);
+    }
+
+    function setCloudStatus(connected) {
+      isCloudConnected = connected;
+      const badge = document.getElementById("cloudStatusBadge");
+      if (connected) {
+        badge.className = "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/25";
+        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Cloud Live`;
+      } else {
+        badge.className = "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-800 text-zinc-400 border border-zinc-700";
+        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-zinc-500"></span> Lokal`;
+      }
+    }
+
+    function renderCustomerCard(data) {
+      myCardData = data;
+      localStorage.setItem("dtp_piercing_card_data", JSON.stringify(data));
+
+      document.getElementById("displayCardId").textContent = data.id;
+      document.getElementById("backCardId").textContent = data.id;
+      document.getElementById("stampCounterText").textContent = `${data.stamps} / 5 Stempel`;
+
+      const remaining = Math.max(0, 5 - data.stamps);
+      const rewardBadge = document.getElementById("rewardStatusBadge");
+      if (data.stamps >= 5) {
+        rewardBadge.textContent = "🎉 Prämie bereit!";
+        rewardBadge.className = "text-[11px] font-bold text-emerald-400";
+      } else {
+        rewardBadge.textContent = `Noch ${remaining} Piercing${remaining === 1 ? "" : "s"}`;
+        rewardBadge.className = "text-[11px] font-semibold text-zinc-400";
+      }
+
+      const googleStatus = document.getElementById("googleBonusStatus");
+      if (data.googleBonusGranted) {
+        googleStatus.innerHTML = `<span class="text-emerald-400 font-semibold">⭐ Google-Bonus erhalten</span>`;
+      } else if (data.googleClicked) {
+        googleStatus.innerHTML = `<span class="text-amber-400">⭐ Bewertung angeklickt (im Studio bestätigen)</span>`;
+      } else {
+        googleStatus.textContent = "⭐ Google-Bewertung: +1 Extra-Stempel möglich";
+      }
+
+      const grid = document.getElementById("stampsGrid");
+      grid.innerHTML = "";
+      for (let i = 1; i <= 5; i++) {
+        const filled = i <= data.stamps;
+        const div = document.createElement("div");
+        div.className = filled
+          ? "aspect-square rounded-2xl stamp-active flex flex-col items-center justify-center text-white font-extrabold text-sm border border-red-400/40 transition-all"
+          : "aspect-square rounded-2xl bg-white/[0.03] border border-dashed border-white/15 flex flex-col items-center justify-center text-zinc-600 font-bold text-xs";
+        div.innerHTML = filled
+          ? `<span class="text-base leading-none">💎</span><span class="text-[9px] mt-1 uppercase tracking-wider opacity-90">#${i}</span>`
+          : `<span>${i}</span>`;
+        grid.appendChild(div);
+      }
+    }
+
+    function generateQrCodes() {
+      const mini = document.getElementById("miniQrCode");
+      const large = document.getElementById("largeQrCode");
+      const counter = document.getElementById("counterQrCode");
+      mini.innerHTML = "";
+      large.innerHTML = "";
+      counter.innerHTML = "";
+
+      new QRCode(mini, { text: myCardId, width: 46, height: 46, colorDark: "#09090b", colorLight: "#ffffff" });
+      new QRCode(large, { text: myCardId, width: 150, height: 150, colorDark: "#09090b", colorLight: "#ffffff" });
+
+      const appUrl = window.location.href.split("#")[0];
+      document.getElementById("currentAppUrl").textContent = appUrl;
+      new QRCode(counter, { text: appUrl, width: 170, height: 170, colorDark: "#09090b", colorLight: "#ffffff" });
+    }
+
+    async function initCloudSync() {
+      renderCustomerCard(myCardData);
+      generateQrCodes();
+
+      try {
+        const cardRef = doc(db, "cards", myCardId);
+        const snap = await getDoc(cardRef);
+        if (!snap.exists()) {
+          await setDoc(cardRef, myCardData);
+        }
+
+        onSnapshot(cardRef, (docSnap) => {
+          setCloudStatus(true);
+          if (docSnap.exists()) {
+            renderCustomerCard(docSnap.data());
+          }
+        }, () => setCloudStatus(false));
+
+        // Listen to studio settings (PIN & News)
+        const settingsRef = doc(db, "settings", "studio");
+        onSnapshot(settingsRef, (docSnap) => {
+          if (docSnap.exists()) {
+            const s = docSnap.data();
+            if (s.pin) studioPin = s.pin;
+            const banner = document.getElementById("newsBanner");
+            if (s.newsText && s.newsText.trim() !== "") {
+              document.getElementById("newsTag").textContent = s.newsTag || "Studio-Info";
+              document.getElementById("newsText").textContent = s.newsText;
+              document.getElementById("newsDate").textContent = s.newsDate || "";
+              banner.classList.remove("hidden");
+            } else {
+              banner.classList.add("hidden");
+            }
+          }
+        });
+
+        // Listen to all cards for admin overview
+        const q = query(collection(db, "cards"), orderBy("updatedAt", "desc"));
+        onSnapshot(q, (querySnap) => {
+          const list = document.getElementById("customersList");
+          document.getElementById("totalCustomersCount").textContent = `${querySnap.size} Karten`;
+          list.innerHTML = "";
+          querySnap.forEach((d) => {
+            const c = d.data();
+            const item = document.createElement("div");
+            item.className = "flex items-center justify-between p-2.5 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 cursor-pointer";
+            item.onclick = () => {
+              switchAdminTab("scan");
+              loadCardForAdmin(c.id);
+            };
+            item.innerHTML = `
+              <div>
+                <span class="font-mono text-xs font-bold text-white">${c.id}</span>
+                <span class="text-[10px] text-zinc-500 block">${c.googleBonusGranted ? "⭐ Google-Bonus aktiv" : "Standard"}</span>
+              </div>
+              <span class="px-2.5 py-1 rounded-lg bg-red-500/15 text-red-400 text-xs font-bold">${c.stamps} / 5</span>
+            `;
+            list.appendChild(item);
+          });
+        });
+      } catch (err) {
+        console.warn("Firestore Fallback:", err);
+        setCloudStatus(false);
+      }
+    }
+
+    window.flipCard = () => {
+      document.getElementById("cardInner").classList.toggle("rotate-y-180");
+    };
+
+    window.markGoogleClicked = async () => {
+      myCardData.googleClicked = true;
+      myCardData.updatedAt = Date.now();
+      renderCustomerCard(myCardData);
+      if (isCloudConnected) {
+        await updateDoc(doc(db, "cards", myCardId), { googleClicked: true, updatedAt: Date.now() });
+      }
+    };
+
+    window.openPinModal = () => {
+      document.getElementById("pinInput").value = "";
+      document.getElementById("pinError").classList.add("hidden");
+      document.getElementById("pinModal").classList.remove("hidden");
+      setTimeout(() => document.getElementById("pinInput").focus(), 100);
+    };
+
+    window.closePinModal = () => {
+      document.getElementById("pinModal").classList.add("hidden");
+    };
+
+    window.verifyPin = () => {
+      const entered = document.getElementById("pinInput").value.trim();
+      const savedLocalPin = localStorage.getItem("dtp_studio_pin");
+      if (entered === studioPin || (savedLocalPin && entered === savedLocalPin)) {
+        closePinModal();
+        document.getElementById("customerView").classList.add("hidden");
+        document.getElementById("adminView").classList.remove("hidden");
+        loadCardForAdmin(myCardId);
+      } else {
+        document.getElementById("pinError").classList.remove("hidden");
+      }
+    };
+
+    window.exitAdminMode = () => {
+      if (html5QrScanner) {
+        html5QrScanner.stop().catch(() => {});
+        html5QrScanner = null;
+      }
+      document.getElementById("adminView").classList.add("hidden");
+      document.getElementById("customerView").classList.remove("hidden");
+    };
+
+    window.switchAdminTab = (tab) => {
+      ["scan", "customers", "news", "counter"].forEach((t) => {
+        document.getElementById(`panel-${t}`).classList.toggle("hidden", t !== tab);
+        const btn = document.getElementById(`tab-${t}`);
+        btn.className = t === tab
+          ? "py-2 rounded-xl bg-red-600 text-white transition"
+          : "py-2 rounded-xl text-zinc-400 hover:text-white transition";
+      });
+    };
+
+    window.toggleQrScanner = () => {
+      const btn = document.getElementById("startScannerBtn");
+      if (html5QrScanner) {
+        html5QrScanner.stop().then(() => {
+          html5QrScanner = null;
+          btn.textContent = "Kamera starten";
+        });
+        return;
+      }
+      html5QrScanner = new Html5Qrcode("qrReader");
+      btn.textContent = "Stoppen";
+      html5QrScanner.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: { width: 220, height: 220 } },
+        (decodedText) => {
+          const cleanId = decodedText.trim().toUpperCase();
+          if (cleanId.startsWith("DTP-")) {
+            loadCardForAdmin(cleanId);
+            showToast(`Karte ${cleanId} erkannt!`);
+            html5QrScanner.stop().then(() => {
+              html5QrScanner = null;
+              btn.textContent = "Kamera starten";
+            });
+          }
+        },
+        () => {}
+      ).catch(() => {
+        showToast("Kamerazugriff nicht möglich");
+        btn.textContent = "Kamera starten";
+      });
+    };
+
+    window.loadCardForAdmin = async (cardId) => {
+      if (!cardId) return;
+      selectedAdminCardId = cardId;
+      document.getElementById("manualCardInput").value = cardId;
+
+      if (isCloudConnected) {
+        const snap = await getDoc(doc(db, "cards", cardId));
+        if (snap.exists()) {
+          selectedAdminCardData = snap.data();
+        } else {
+          selectedAdminCardData = { id: cardId, stamps: 0, googleBonusGranted: false, googleClicked: false, redeemedCount: 0, updatedAt: Date.now() };
+          await setDoc(doc(db, "cards", cardId), selectedAdminCardData);
+        }
+      } else {
+        selectedAdminCardData = cardId === myCardId ? { ...myCardData } : { id: cardId, stamps: 0, googleBonusGranted: false, redeemedCount: 0 };
+      }
+
+      updateAdminCardUI();
+    };
+
+    function updateAdminCardUI() {
+      if (!selectedAdminCardData) return;
+      document.getElementById("adminSelectedCardBox").classList.remove("hidden");
+      document.getElementById("adminCardTitle").textContent = selectedAdminCardData.id;
+      document.getElementById("adminCardStampsBadge").textContent = `${selectedAdminCardData.stamps} / 5 Stempel`;
+
+      const gBtn = document.getElementById("adminGoogleBonusBtn");
+      if (selectedAdminCardData.googleBonusGranted) {
+        gBtn.textContent = "✓ Google-Bonus bereits vergeben";
+        gBtn.disabled = true;
+        gBtn.classList.add("opacity-50");
+      } else {
+        gBtn.textContent = "⭐ Google-Bewertung bestätigen (+1 Bonus-Stempel)";
+        gBtn.disabled = false;
+        gBtn.classList.remove("opacity-50");
+      }
+
+      document.getElementById("adminRedeemBox").classList.toggle("hidden", selectedAdminCardData.stamps < 5);
+    }
+
+    window.adminAddStamp = async (delta) => {
+      if (!selectedAdminCardData) return;
+      selectedAdminCardData.stamps = Math.max(0, Math.min(5, selectedAdminCardData.stamps + delta));
+      selectedAdminCardData.updatedAt = Date.now();
+      updateAdminCardUI();
+
+      if (selectedAdminCardData.id === myCardId) renderCustomerCard(selectedAdminCardData);
+      if (isCloudConnected) {
+        await setDoc(doc(db, "cards", selectedAdminCardData.id), selectedAdminCardData);
+      }
+      showToast(delta > 0 ? "+1 Piercing-Stempel vergeben!" : "Stempel korrigiert");
+    };
+
+    window.adminGrantGoogleBonus = async () => {
+      if (!selectedAdminCardData || selectedAdminCardData.googleBonusGranted) return;
+      selectedAdminCardData.googleBonusGranted = true;
+      selectedAdminCardData.stamps = Math.min(5, selectedAdminCardData.stamps + 1);
+      selectedAdminCardData.updatedAt = Date.now();
+      updateAdminCardUI();
+
+      if (selectedAdminCardData.id === myCardId) renderCustomerCard(selectedAdminCardData);
+      if (isCloudConnected) {
+        await setDoc(doc(db, "cards", selectedAdminCardData.id), selectedAdminCardData);
+      }
+      showToast("⭐ Google-Bonus (+1 Stempel) gutgeschrieben!");
+    };
+
+    window.adminRedeemReward = async (rewardName) => {
+      if (!selectedAdminCardData || selectedAdminCardData.stamps < 5) return;
+      selectedAdminCardData.stamps = 0;
+      selectedAdminCardData.redeemedCount = (selectedAdminCardData.redeemedCount || 0) + 1;
+      selectedAdminCardData.updatedAt = Date.now();
+      updateAdminCardUI();
+
+      if (selectedAdminCardData.id === myCardId) renderCustomerCard(selectedAdminCardData);
+      if (isCloudConnected) {
+        await setDoc(doc(db, "cards", selectedAdminCardData.id), selectedAdminCardData);
+      }
+      showToast(`🎉 ${rewardName} eingelöst! Karte zurückgesetzt.`);
+    };
+
+    window.publishNews = async () => {
+      const tag = document.getElementById("newsTagInput").value;
+      const text = document.getElementById("newsTextInput").value.trim();
+      if (!text) return showToast("Bitte erst einen Text eingeben");
+      const today = new Date().toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" });
+
+      if (isCloudConnected) {
+        await setDoc(doc(db, "settings", "studio"), { newsTag: tag, newsText: text, newsDate: today, pin: studioPin }, { merge: true });
+      }
+      showToast("📢 Nachricht an alle Kunden gesendet!");
+    };
+
+    window.clearNews = async () => {
+      document.getElementById("newsTextInput").value = "";
+      if (isCloudConnected) {
+        await setDoc(doc(db, "settings", "studio"), { newsText: "", pin: studioPin }, { merge: true });
+      }
+      showToast("Nachricht entfernt");
+    };
+
+    window.updateStudioPin = async () => {
+      const newPin = document.getElementById("newPinInput").value.trim();
+      if (newPin.length < 4) return showToast("PIN muss mind. 4 Zeichen haben");
+      studioPin = newPin;
+      localStorage.setItem("dtp_studio_pin", newPin);
+      if (isCloudConnected) {
+        await setDoc(doc(db, "settings", "studio"), { pin: newPin }, { merge: true });
+      }
+      document.getElementById("newPinInput").value = "";
+      showToast("Neue Studio-PIN gespeichert!");
+    };
+
+    window.openInstallModal = () => document.getElementById("installModal").classList.remove("hidden");
+    window.closeInstallModal = () => document.getElementById("installModal").classList.add("hidden");
+
+    initCloudSync();
+  </script>
+</body>
+</html>
+
