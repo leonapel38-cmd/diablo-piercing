@@ -1,226 +1,317 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" class="overflow-x-hidden">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Diablo Tattoo &amp; Piercing Weimar – Piercing Treuekarte</title>
-  <meta name="theme-color" content="#09090b" />
+  <meta name="theme-color" content="#000000" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap');
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden;
+      box-sizing: border-box;
+    }
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: #09090b;
-      color: #f4f4f5;
+      background-color: #000000;
+      color: #ffffff;
       -webkit-tap-highlight-color: transparent;
     }
-    .metallic-card {
-      background: linear-gradient(145deg, #18181b 0%, #09090b 60%, #1f1f23 100%);
-      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.85), inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+    /* High-Contrast Poster & Streetwear Card Styling */
+    .bold-card {
+      background-color: #080808;
+      border: 2px solid #ffffff;
+      box-shadow: 0 10px 0 0 #dc2626;
     }
-    .stamp-active {
-      background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%);
-      box-shadow: 0 0 18px rgba(239, 68, 68, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+    .stamp-active-bold {
+      background-color: #dc2626;
+      border: 2px solid #ffffff;
+      box-shadow: 0 3px 0 0 rgba(255, 255, 255, 0.25);
     }
-    @keyframes cardFadeIn {
-      from { opacity: 0; transform: translateY(4px) scale(0.99); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+    /* 3D Flip Card with Absolute Faces & Dynamic Auto-Fit Container Height (Zero Gaps) */
+    .flip-perspective {
+      perspective: 1200px;
+      width: 100%;
+      padding-bottom: 10px; /* accommodates the 10px solid red poster shadow */
     }
-    .card-fade-in {
-      animation: cardFadeIn 0.25s ease-out forwards;
+    .flip-inner {
+      position: relative;
+      width: 100%;
+      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), height 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+    }
+    .flip-inner.is-flipped {
+      transform: rotateY(180deg);
+    }
+    .flip-face {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: fit-content;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transition: visibility 0.3s ease;
+    }
+    .flip-front {
+      transform: rotateY(0deg);
+      visibility: visible;
+      pointer-events: auto;
+      z-index: 2;
+    }
+    .flip-inner.is-flipped .flip-front {
+      visibility: hidden;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .flip-back {
+      transform: rotateY(180deg);
+      visibility: hidden;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .flip-inner.is-flipped .flip-back {
+      visibility: visible;
+      pointer-events: auto;
+      z-index: 2;
     }
     #customerLargeQr img, #customerLargeQr canvas,
     #counterQrCode img, #counterQrCode canvas {
       display: block;
       margin: 0 auto;
+      max-width: 100%;
+      height: auto;
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between bg-zinc-950 text-zinc-100 selection:bg-red-500/30">
+<body class="min-h-screen flex flex-col justify-between bg-[#000000] text-white selection:bg-red-600 selection:text-white">
 
-  <!-- Top Header (Discreet, 5 taps on DTP opens Studio Control) -->
-  <header class="w-full max-w-md mx-auto px-4 pt-5 pb-3 flex items-center justify-between">
-    <div class="flex items-center gap-2.5">
-      <div id="secretLogoTrigger" onclick="handleLogoTap()" class="w-9 h-9 rounded-xl bg-gradient-to-br from-red-600 to-zinc-900 border border-white/10 flex items-center justify-center font-extrabold text-sm tracking-tighter text-white shadow-lg cursor-pointer select-none active:scale-95 transition">
+  <!-- High-Contrast Top Header (5 taps on DTP logo opens Studio Control; Top-Right Settings button) -->
+  <header class="w-full max-w-md mx-auto px-4 pt-4 pb-2.5 flex items-center justify-between gap-2">
+    <div class="flex items-center gap-2.5 min-w-0">
+      <div id="secretLogoTrigger" onclick="handleLogoTap()" class="w-10 h-10 shrink-0 rounded-xl bg-red-600 border-2 border-white flex items-center justify-center font-black text-sm tracking-tighter text-white cursor-pointer select-none active:translate-y-0.5 transition">
         DTP
       </div>
-      <div>
-        <div class="flex items-center gap-2">
-          <span class="text-xs font-bold uppercase tracking-wider text-zinc-300">Piercing Pass</span>
-          <span id="cloudStatusBadge" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
-            <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span> Verbinde...
+      <div class="min-w-0">
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="text-xs font-black uppercase tracking-wider text-white">PIERCING PASS</span>
+          <span id="cloudStatusBadge" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-black uppercase bg-amber-400 text-black">
+            <span class="w-1.5 h-1.5 rounded-full bg-black animate-pulse"></span> Verbinde...
           </span>
         </div>
-        <p class="text-[11px] text-zinc-500">Nur für Piercings · Tattoos ausgeschlossen</p>
+        <p class="text-[11px] font-bold text-zinc-400 truncate">Digitale Piercing-Treuekarte</p>
       </div>
     </div>
+
+    <!-- Top-Right Privacy & News Consent Settings Button -->
+    <button onclick="openConsentModal(true)" aria-label="Datenschutz & News-Einstellungen" title="Datenschutz & News-Einstellungen" class="p-2.5 shrink-0 rounded-xl bg-neutral-900 hover:bg-neutral-800 border-2 border-white text-white transition active:translate-y-0.5 flex items-center gap-1.5">
+      <span class="text-sm leading-none" aria-hidden="true">⚙️</span>
+      <span class="text-[11px] font-black uppercase hidden sm:inline">Einstellungen</span>
+    </button>
   </header>
 
   <!-- Main Customer View -->
-  <main id="customerView" class="w-full max-w-md mx-auto px-4 pb-8 flex-1 flex flex-col gap-4">
+  <main id="customerView" class="w-full max-w-md mx-auto px-4 pb-8 flex-1 flex flex-col gap-3.5">
     
     <!-- Live Studio News Banner -->
-    <div id="newsBanner" class="hidden rounded-2xl bg-gradient-to-r from-red-950/60 via-zinc-900 to-zinc-900 border border-red-500/25 p-3.5 shadow-lg">
+    <div id="newsBanner" class="hidden rounded-2xl bg-red-600 border-2 border-white p-3.5 text-white">
       <div class="flex items-start gap-2.5">
-        <span class="text-base leading-none mt-0.5">📢</span>
-        <div class="flex-1">
-          <div class="flex items-center justify-between">
-            <span id="newsTag" class="text-[10px] font-bold uppercase tracking-wider text-red-400">Studio-Info</span>
-            <span id="newsDate" class="text-[10px] text-zinc-500"></span>
-          </div>
-          <p id="newsText" class="text-xs text-zinc-200 mt-1 leading-relaxed"></p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Loyalty Card Container -->
-    <div id="cardInner" class="w-full">
-      
-      <!-- FRONT OF CARD -->
-      <div id="cardFront" class="card-fade-in w-full rounded-3xl metallic-card border border-white/10 p-6 flex flex-col justify-between">
-        <div>
-          <!-- Header Badge & Studio Title -->
-          <div>
-            <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-red-500/15 text-red-400 border border-red-500/20 mb-2">
-              Exklusiv für Piercings
-            </span>
-            <h1 class="text-xl font-extrabold tracking-tight text-white leading-snug">
-              Diablo Tattoo &amp; Piercing Weimar
-            </h1>
-            <p class="text-xs text-zinc-400 mt-0.5">Digitale Piercing-Treuekarte</p>
-          </div>
-
-          <!-- Stamp Progress (5 Fields) -->
-          <div class="mt-5">
-            <div class="flex items-center justify-between text-xs mb-2.5">
-              <span class="text-zinc-400 font-medium">Dein Stempelstand</span>
-              <span id="stampCounterText" class="font-bold text-white">0 / 5 Stempel</span>
-            </div>
-
-            <div id="stampsGrid" class="grid grid-cols-5 gap-2">
-              <!-- 5 Stamps rendered by JS -->
-            </div>
-          </div>
-
-          <!-- Reward Box (Strictly 10 € Piercing-Gutschein, valid 1 year) -->
-          <div class="mt-4 rounded-2xl bg-white/[0.03] border border-white/10 p-3.5">
-            <div class="flex items-center justify-between">
-              <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Prämie bei 5 Stempeln</span>
-              <span id="rewardStatusBadge" class="text-[11px] font-semibold text-zinc-500">Noch 5 Piercings</span>
-            </div>
-            <p class="text-base font-extrabold text-white mt-0.5">
-              10 € Piercing-Gutschein
-            </p>
-            <p class="text-[11px] text-zinc-400 mt-1 leading-snug">
-              Gültig 1 Jahr ab Ausstellung · Ausschließlich für Piercings, Tattoos ausgeschlossen.
-            </p>
-          </div>
-        </div>
-
-        <!-- Large Centered Customer QR Code & ID Footer -->
-        <div class="mt-5 pt-4 border-t border-white/10 flex flex-col items-center text-center">
-          <div class="bg-white p-2.5 rounded-2xl shadow-lg">
-            <div id="customerLargeQr" class="flex items-center justify-center"></div>
-          </div>
-          <span id="displayCardId" class="font-mono text-base font-extrabold tracking-widest text-white mt-3">DTP-0000</span>
-          <span id="googleBonusStatus" class="text-[11px] text-zinc-400 mt-1">⭐ Google-Bewertung: +1 Extra-Stempel möglich</span>
-        </div>
-      </div>
-
-      <!-- BACK OF CARD (Clean, unified, minimal lines, compact without gap below) -->
-      <div id="cardBack" class="hidden card-fade-in w-full rounded-3xl metallic-card border border-white/10 p-6 flex flex-col">
-        <div class="space-y-4">
-          <!-- Header -->
+        <span class="text-lg leading-none">📢</span>
+        <div class="flex-1 min-w-0">
           <div class="flex items-center justify-between gap-2">
-            <span class="text-xs font-bold uppercase tracking-wider text-red-400">Studio &amp; Team</span>
-            <span class="text-xs text-zinc-400 text-right">Erfurter Str. 22, 99423 Weimar</span>
+            <span id="newsTag" class="inline-block px-2 py-0.5 rounded bg-black text-[10px] font-black uppercase tracking-wider text-white">Studio-Info</span>
+            <span id="newsDate" class="text-[11px] font-bold text-white/90 shrink-0"></span>
           </div>
-
-          <!-- Clean Studio Info without inner dividing lines or extra borders -->
-          <div class="space-y-1 text-xs text-zinc-300">
-            <div class="flex justify-between gap-2">
-              <span class="text-zinc-500">Studio:</span>
-              <span class="font-semibold text-white text-right">Diablo Tattoo &amp; Piercing Weimar</span>
-            </div>
-            <div class="flex justify-between gap-2">
-              <span class="text-zinc-500">Hinweis:</span>
-              <span class="text-zinc-300 text-right">Walk-In &amp; Termine n. Vereinbarung</span>
-            </div>
-          </div>
-
-          <!-- Three Uniform Instagram Buttons with Left-Aligned Crisp Red Icons -->
-          <div class="space-y-2.5">
-            <a href="https://www.instagram.com/diablotattooweimar" target="_blank" rel="noopener" class="flex items-center justify-start gap-3 w-full py-3 px-4 rounded-2xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-semibold text-zinc-100 transition active:scale-95">
-              <svg class="w-4 h-4 shrink-0 text-red-500 fill-current" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-              </svg>
-              <span class="truncate">Diablo Tattoo &amp; Piercing (@diablotattooweimar)</span>
-            </a>
-
-            <a href="https://www.instagram.com/piercing_by_sven" target="_blank" rel="noopener" class="flex items-center justify-start gap-3 w-full py-3 px-4 rounded-2xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-semibold text-zinc-100 transition active:scale-95">
-              <svg class="w-4 h-4 shrink-0 text-red-500 fill-current" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-              </svg>
-              <span class="truncate">Sven Haufe (@piercing_by_sven)</span>
-            </a>
-
-            <a href="https://www.instagram.com/derpiercingknecht" target="_blank" rel="noopener" class="flex items-center justify-start gap-3 w-full py-3 px-4 rounded-2xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-semibold text-zinc-100 transition active:scale-95">
-              <svg class="w-4 h-4 shrink-0 text-red-500 fill-current" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-              </svg>
-              <span class="truncate">Leon Apel (@derpiercingknecht)</span>
-            </a>
-          </div>
+          <p id="newsText" class="text-xs font-bold text-white mt-1.5 leading-snug break-words"></p>
         </div>
       </div>
-
     </div>
 
-    <!-- Single Flip Button Below Card -->
-    <button id="flipCardBtn" onclick="flipCard()" class="w-full py-3.5 rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-bold text-white transition active:scale-95 shadow-md">
+    <!-- 3D Flip Loyalty Card Container (Exact Auto-Fit Height, Zero Gaps on Both Sides) -->
+    <div class="flip-perspective w-full">
+      <div id="cardFlipInner" class="flip-inner w-full">
+        
+        <!-- FRONT OF CARD (With Large Centered QR Code & Zero Gaps) -->
+        <div id="cardFront" class="flip-face flip-front rounded-3xl bold-card overflow-hidden">
+          <!-- Top High-Contrast Strip -->
+          <div class="bg-red-600 border-b-2 border-white px-4 py-2 text-center">
+            <span class="text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-white block">
+              EXKLUSIV FÜR PIERCINGS · TREUEPASS
+            </span>
+          </div>
+
+          <div class="p-5 sm:p-6">
+            <!-- Studio Title -->
+            <div>
+              <h1 class="text-xl sm:text-2xl font-black uppercase tracking-tight text-white leading-none">
+                DIABLO TATTOO &amp; PIERCING WEIMAR
+              </h1>
+              <p class="text-xs font-extrabold uppercase tracking-wider text-red-500 mt-1.5">
+                Digitale Piercing-Treuekarte
+              </p>
+            </div>
+
+            <!-- 5 High-Contrast Skull Stamp Fields -->
+            <div class="mt-4 sm:mt-5">
+              <div class="flex items-center justify-between text-xs mb-2">
+                <span class="font-extrabold uppercase tracking-wider text-zinc-300">Dein Stempelstand</span>
+                <span id="stampCounterText" class="px-2.5 py-0.5 rounded-md bg-white text-black font-black text-xs">0 / 5 Stempel</span>
+              </div>
+
+              <div id="stampsGrid" class="grid grid-cols-5 gap-1.5 sm:gap-2">
+                <!-- 5 Skull Stamps rendered by JS -->
+              </div>
+            </div>
+
+            <!-- High-Contrast White Reward Box -->
+            <div class="mt-4 rounded-2xl bg-white text-black border-2 border-red-600 p-3.5">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-[10px] font-black uppercase tracking-wider bg-black text-white px-2 py-0.5 rounded">
+                  PRÄMIE BEI 5 STEMPELN
+                </span>
+                <span id="rewardStatusBadge" class="text-[11px] font-black uppercase text-red-600 shrink-0">Noch 5 Piercings</span>
+              </div>
+              <p class="text-lg sm:text-xl font-black uppercase tracking-tight text-black mt-1.5">
+                🎁 1 GRATIS PIERCING
+              </p>
+              <p class="text-[11px] font-bold text-zinc-800 mt-0.5 leading-snug">
+                Gültig 1 Jahr ab Ausstellung.
+              </p>
+            </div>
+          </div>
+
+          <!-- Large Centered Customer QR Code & Bold ID Footer (Tightly fitted, zero empty space) -->
+          <div class="px-5 sm:px-6 py-4 border-t-2 border-zinc-800 bg-neutral-950 flex flex-col items-center text-center">
+            <div class="bg-white p-3 rounded-2xl border-2 border-red-600 shadow-lg">
+              <div id="customerLargeQr" class="flex items-center justify-center"></div>
+            </div>
+            <span id="displayCardId" class="font-mono text-base sm:text-lg font-black tracking-widest text-white bg-red-600 px-3.5 py-0.5 rounded-lg border border-white mt-2.5">DTP-0000</span>
+            <span id="googleBonusStatus" class="text-[11px] font-bold text-zinc-300 mt-1.5 leading-snug">⭐ Google-Bewertung: +1 Extra-Stempel möglich</span>
+          </div>
+        </div>
+
+        <!-- BACK OF CARD (Compact Studio & Team Info, Ends Directly After 3rd Instagram Button) -->
+        <div id="cardBack" class="flip-face flip-back rounded-3xl bold-card overflow-hidden">
+          <!-- Top High-Contrast Strip -->
+          <div class="bg-white border-b-2 border-red-600 px-4 py-2 flex items-center justify-between gap-2 text-black">
+            <span class="text-[11px] font-black uppercase tracking-wider shrink-0">STUDIO &amp; TEAM</span>
+            <span class="text-[11px] font-extrabold text-right">Erfurter Str. 22, 99423 Weimar</span>
+          </div>
+
+          <div class="p-5 sm:p-6 space-y-3.5">
+            <!-- Studio Info Box -->
+            <div class="rounded-2xl bg-neutral-950 border-2 border-zinc-700 p-3.5 space-y-2 text-xs">
+              <div class="flex justify-between items-start gap-2">
+                <span class="font-bold uppercase text-zinc-400 shrink-0">Studio:</span>
+                <span class="font-black text-white text-right">Diablo Tattoo &amp; Piercing Weimar</span>
+              </div>
+              <div class="flex justify-between items-start gap-2">
+                <span class="font-bold uppercase text-zinc-400 shrink-0">Service:</span>
+                <span class="font-bold text-white text-right">Walk-In &amp; Termine n. Vereinbarung</span>
+              </div>
+              <div class="flex justify-between items-start gap-2">
+                <span class="font-bold uppercase text-zinc-400 shrink-0">Prämie:</span>
+                <span class="font-black text-red-500 text-right">1 Gratis Piercing (nach 5 Stempeln)</span>
+              </div>
+            </div>
+
+            <!-- Three Uniform Instagram Buttons with Original Colored Instagram Gradient Icons -->
+            <div class="space-y-2">
+              <p class="text-[11px] font-black uppercase tracking-wider text-red-500">Folge unserem Team auf Instagram</p>
+
+              <a href="https://www.instagram.com/diablotattooweimar" target="_blank" rel="noopener" class="flex items-center justify-start gap-3 w-full py-2.5 px-3.5 rounded-2xl bg-neutral-900 hover:bg-neutral-800 border-2 border-white text-xs font-extrabold text-white transition active:translate-y-0.5">
+                <span class="w-6 h-6 rounded-lg bg-gradient-to-tr from-amber-500 via-pink-600 to-purple-600 flex items-center justify-center shrink-0">
+                  <svg class="w-3.5 h-3.5 text-white fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                  </svg>
+                </span>
+                <span class="truncate min-w-0">Diablo Tattoo &amp; Piercing (@diablotattooweimar)</span>
+              </a>
+
+              <a href="https://www.instagram.com/piercing_by_sven" target="_blank" rel="noopener" class="flex items-center justify-start gap-3 w-full py-2.5 px-3.5 rounded-2xl bg-neutral-900 hover:bg-neutral-800 border-2 border-white text-xs font-extrabold text-white transition active:translate-y-0.5">
+                <span class="w-6 h-6 rounded-lg bg-gradient-to-tr from-amber-500 via-pink-600 to-purple-600 flex items-center justify-center shrink-0">
+                  <svg class="w-3.5 h-3.5 text-white fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                  </svg>
+                </span>
+                <span class="truncate min-w-0">Sven Haufe (@piercing_by_sven)</span>
+              </a>
+
+              <a href="https://www.instagram.com/derpiercingknecht" target="_blank" rel="noopener" class="flex items-center justify-start gap-3 w-full py-2.5 px-3.5 rounded-2xl bg-neutral-900 hover:bg-neutral-800 border-2 border-white text-xs font-extrabold text-white transition active:translate-y-0.5">
+                <span class="w-6 h-6 rounded-lg bg-gradient-to-tr from-amber-500 via-pink-600 to-purple-600 flex items-center justify-center shrink-0">
+                  <svg class="w-3.5 h-3.5 text-white fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                  </svg>
+                </span>
+                <span class="truncate min-w-0">Leon Apel (@derpiercingknecht)</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Single Bold Flip Button Below Card -->
+    <button id="flipCardBtn" onclick="flipCard()" class="w-full py-3.5 rounded-2xl bg-white hover:bg-zinc-200 border-2 border-white text-xs font-black uppercase tracking-wider text-black transition active:translate-y-0.5">
       Karte wenden (QR-Code / Team) ↺
     </button>
 
-    <!-- Prominent Google Review Button & Save App Button -->
+    <!-- High-Contrast Action Buttons -->
     <div class="flex flex-col gap-2.5">
-      <a href="https://www.google.com/search?q=Diablo+Tattoo+und+Piercing+Weimar+Bewertungen" target="_blank" rel="noopener" onclick="markGoogleClicked()" class="flex items-center justify-center gap-2 w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-xs font-extrabold text-white shadow-lg shadow-red-950/50 transition active:scale-95">
+      <a id="googleReviewBtn" href="https://www.google.com/search?q=Diablo+Tattoo+und+Piercing+Weimar+Bewertungen" target="_blank" rel="noopener" onclick="markGoogleClicked()" class="flex items-center justify-center gap-2 w-full py-4 px-4 rounded-2xl bg-red-600 hover:bg-red-500 border-2 border-white text-xs font-black uppercase tracking-wider text-white transition active:translate-y-0.5">
         <span>⭐</span>
-        <span>Google bewerten (+1)</span>
+        <span>Google bewerten (+1 Extra-Stempel)</span>
       </a>
-      <button onclick="openInstallModal()" class="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-semibold text-zinc-200 transition active:scale-95">
+      <div id="googleReviewCompletedBadge" class="hidden flex items-center justify-center gap-2 w-full py-3.5 px-4 rounded-2xl bg-neutral-900 border-2 border-emerald-500 text-xs font-extrabold text-emerald-400 select-none cursor-not-allowed">
+        <span>✓</span>
+        <span>Google-Bonus bereits eingelöst (einmalig)</span>
+      </div>
+      <button onclick="openInstallModal()" class="flex items-center justify-center gap-2 w-full py-3.5 px-4 rounded-2xl bg-neutral-900 hover:bg-neutral-800 border-2 border-zinc-600 text-xs font-extrabold uppercase tracking-wider text-white transition active:translate-y-0.5">
         <span>📲</span>
         <span>Als App speichern</span>
       </button>
     </div>
 
-    <!-- Footer with Discreet Studio Lock -->
-    <footer class="mt-2 text-center text-[11px] text-zinc-500 space-y-1">
-      <p>Diablo Tattoo &amp; Piercing Weimar · Erfurter Str. 22, 99423 Weimar</p>
-      <p class="text-[10px] text-zinc-600 flex items-center justify-center gap-1.5">
-        <span>Treueprogramm gilt ausschließlich für Piercings · Tattoos ausgeschlossen.</span>
-        <button onclick="openPinModal()" aria-label="Studio Login" class="text-zinc-800 hover:text-zinc-600 transition p-1">🔒</button>
+    <!-- Footer (ONLY place mentioning 'Tattoos ausgeschlossen') -->
+    <footer class="mt-2 text-center text-[11px] text-zinc-400 space-y-1.5">
+      <p class="font-bold text-zinc-300">Diablo Tattoo &amp; Piercing Weimar · Erfurter Str. 22, 99423 Weimar</p>
+      <p class="text-[10px] text-zinc-500 flex items-center justify-center gap-1.5">
+        <span>Ausschließlich für Piercings · Tattoos ausgeschlossen.</span>
+        <button onclick="openPinModal()" aria-label="Studio Login" class="text-zinc-700 hover:text-zinc-400 transition p-1">🔒</button>
       </p>
+      <div class="pt-1 flex items-center justify-center gap-3 text-[11px] font-bold text-zinc-400">
+        <button onclick="openImpressumModal()" class="underline hover:text-white transition">Impressum &amp; Datenschutz</button>
+        <span>·</span>
+        <button onclick="openConsentModal(true)" class="underline hover:text-white transition">News-Einstellungen</button>
+      </div>
     </footer>
   </main>
 
   <!-- ADMIN / STUDIO CONTROL VIEW -->
   <section id="adminView" class="hidden w-full max-w-md mx-auto px-4 pb-10 flex-1 flex flex-col gap-4">
-    <div class="flex items-center justify-between bg-zinc-900 border border-zinc-800 rounded-2xl p-3">
+    <div class="flex items-center justify-between bg-neutral-900 border-2 border-white rounded-2xl p-3">
       <div>
-        <span class="text-xs font-bold text-red-400 uppercase tracking-wider">Diensthandy-Modus</span>
-        <h2 class="text-sm font-bold text-white">Diablo Piercing Kontrolle</h2>
+        <span class="text-[10px] font-black text-red-500 uppercase tracking-wider">Diensthandy-Modus</span>
+        <h2 class="text-sm font-black uppercase text-white">Diablo Piercing Kontrolle</h2>
       </div>
-      <button onclick="exitAdminMode()" class="px-3 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-semibold text-zinc-200">
+      <button onclick="exitAdminMode()" class="px-3 py-1.5 rounded-xl bg-white text-black text-xs font-black uppercase">
         Schließen ✕
       </button>
     </div>
 
     <!-- Admin Tabs -->
-    <div class="grid grid-cols-4 gap-1.5 bg-zinc-900 p-1.5 rounded-2xl border border-zinc-800 text-xs font-semibold">
+    <div class="grid grid-cols-4 gap-1.5 bg-neutral-900 p-1.5 rounded-2xl border-2 border-zinc-700 text-xs font-extrabold">
       <button onclick="switchAdminTab('scan')" id="tab-scan" class="py-2 rounded-xl bg-red-600 text-white transition">📷 Scan</button>
       <button onclick="switchAdminTab('customers')" id="tab-customers" class="py-2 rounded-xl text-zinc-400 hover:text-white transition">👥 Kunden</button>
       <button onclick="switchAdminTab('news')" id="tab-news" class="py-2 rounded-xl text-zinc-400 hover:text-white transition">📢 News</button>
@@ -229,20 +320,20 @@
 
     <!-- TAB 1: SCAN & STAMP -->
     <div id="panel-scan" class="space-y-4">
-      <div class="rounded-2xl bg-zinc-900 border border-zinc-800 p-4">
+      <div class="rounded-2xl bg-neutral-900 border-2 border-zinc-700 p-4">
         <div class="flex items-center justify-between mb-3">
-          <span class="text-xs font-bold text-zinc-300">Kunden-QR-Code scannen</span>
-          <button id="startScannerBtn" onclick="toggleQrScanner()" class="px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 text-xs font-bold text-white transition">
+          <span class="text-xs font-black uppercase text-white">Kunden-QR-Code scannen</span>
+          <button id="startScannerBtn" onclick="toggleQrScanner()" class="px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 border border-white text-xs font-black text-white transition">
             Kamera starten
           </button>
         </div>
         <div id="qrReader" class="w-full rounded-xl overflow-hidden bg-black"></div>
 
         <div class="mt-3 pt-3 border-t border-zinc-800">
-          <label class="text-[11px] text-zinc-400 block mb-1.5">Oder Karten-ID manuell eingeben:</label>
+          <label class="text-[11px] font-bold text-zinc-300 block mb-1.5">Oder Karten-ID manuell eingeben:</label>
           <div class="flex gap-2">
-            <input id="manualCardInput" type="text" placeholder="z. B. DTP-4821" class="flex-1 bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white uppercase focus:outline-none focus:border-red-500" />
-            <button onclick="loadCardForAdmin(document.getElementById('manualCardInput').value.trim().toUpperCase())" class="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-white">
+            <input id="manualCardInput" type="text" placeholder="z. B. DTP-4821" class="flex-1 bg-black border-2 border-zinc-700 rounded-xl px-3 py-2 text-xs font-bold text-white uppercase focus:outline-none focus:border-red-500" />
+            <button onclick="loadCardForAdmin(document.getElementById('manualCardInput').value.trim().toUpperCase())" class="px-4 py-2 rounded-xl bg-white text-xs font-black uppercase text-black">
               Laden
             </button>
           </div>
@@ -250,32 +341,32 @@
       </div>
 
       <!-- Selected Customer Card Control -->
-      <div id="adminSelectedCardBox" class="hidden rounded-2xl bg-zinc-900 border border-red-500/30 p-4 space-y-4">
+      <div id="adminSelectedCardBox" class="hidden rounded-2xl bg-neutral-900 border-2 border-red-600 p-4 space-y-4">
         <div class="flex items-center justify-between">
           <div>
-            <span class="text-[10px] uppercase tracking-wider text-zinc-500">Aktive Kundenkarte</span>
-            <h3 id="adminCardTitle" class="text-base font-extrabold text-white font-mono">DTP-0000</h3>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Aktive Kundenkarte</span>
+            <h3 id="adminCardTitle" class="text-lg font-black text-white font-mono">DTP-0000</h3>
           </div>
-          <span id="adminCardStampsBadge" class="px-3 py-1 rounded-full bg-red-500/15 text-red-400 text-xs font-bold">0 / 5 Stempel</span>
+          <span id="adminCardStampsBadge" class="px-3 py-1 rounded-lg bg-red-600 text-white text-xs font-black">0 / 5 Stempel</span>
         </div>
 
         <div class="grid grid-cols-2 gap-2">
-          <button onclick="adminAddStamp(1)" class="py-3 px-3 rounded-xl bg-red-600 hover:bg-red-500 text-xs font-bold text-white shadow-lg transition active:scale-95">
+          <button onclick="adminAddStamp(1)" class="py-3 px-3 rounded-xl bg-red-600 hover:bg-red-500 border-2 border-white text-xs font-black uppercase text-white transition active:translate-y-0.5">
             +1 Piercing-Stempel
           </button>
-          <button onclick="adminAddStamp(-1)" class="py-3 px-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-semibold text-zinc-300 transition active:scale-95">
+          <button onclick="adminAddStamp(-1)" class="py-3 px-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 border-2 border-zinc-600 text-xs font-extrabold text-zinc-200 transition active:translate-y-0.5">
             -1 Korrektur
           </button>
         </div>
 
         <div class="pt-2 border-t border-zinc-800 space-y-2">
-          <button id="adminGoogleBonusBtn" onclick="adminGrantGoogleBonus()" class="w-full py-2.5 px-3 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-xs font-bold text-amber-300 transition">
+          <button id="adminGoogleBonusBtn" onclick="adminGrantGoogleBonus()" class="w-full py-2.5 px-3 rounded-xl bg-amber-400 hover:bg-amber-300 border-2 border-white text-xs font-black text-black transition">
             ⭐ Google-Bewertung bestätigen (+1 Bonus-Stempel)
           </button>
 
           <div id="adminRedeemBox" class="hidden pt-2">
-            <button onclick="adminRedeemReward('10 € Piercing-Gutschein')" class="w-full py-3 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-xs font-bold text-white transition shadow-lg">
-              🎟️ 10 € Piercing-Gutschein einlösen
+            <button onclick="adminRedeemReward('1 Gratis Piercing')" class="w-full py-3.5 px-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 border-2 border-white text-xs font-black uppercase text-black transition">
+              🎁 1 Gratis Piercing einlösen
             </button>
           </div>
         </div>
@@ -283,22 +374,22 @@
     </div>
 
     <!-- TAB 2: ALL CUSTOMERS -->
-    <div id="panel-customers" class="hidden rounded-2xl bg-zinc-900 border border-zinc-800 p-4 space-y-3">
+    <div id="panel-customers" class="hidden rounded-2xl bg-neutral-900 border-2 border-zinc-700 p-4 space-y-3">
       <div class="flex items-center justify-between">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400">Registrierte Karten</h3>
-        <span id="totalCustomersCount" class="text-xs font-bold text-white">0 Karten</span>
+        <h3 class="text-xs font-black uppercase tracking-wider text-white">Registrierte Karten</h3>
+        <span id="totalCustomersCount" class="text-xs font-black text-red-500">0 Karten</span>
       </div>
       <div id="customersList" class="space-y-2 max-h-80 overflow-y-auto">
-        <p class="text-xs text-zinc-500">Lade Kundenkarten...</p>
+        <p class="text-xs text-zinc-400">Lade Kundenkarten...</p>
       </div>
     </div>
 
     <!-- TAB 3: BROADCAST NEWS -->
-    <div id="panel-news" class="hidden rounded-2xl bg-zinc-900 border border-zinc-800 p-4 space-y-3">
-      <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400">Live-Nachricht an alle Kundenkarten</h3>
+    <div id="panel-news" class="hidden rounded-2xl bg-neutral-900 border-2 border-zinc-700 p-4 space-y-3">
+      <h3 class="text-xs font-black uppercase tracking-wider text-white">Live-Nachricht an alle Kundenkarten</h3>
       <div>
-        <label class="text-[11px] text-zinc-400 block mb-1">Kategorie</label>
-        <select id="newsTagInput" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white">
+        <label class="text-[11px] font-bold text-zinc-300 block mb-1">Kategorie</label>
+        <select id="newsTagInput" class="w-full bg-black border-2 border-zinc-700 rounded-xl px-3 py-2 text-xs font-bold text-white">
           <option value="Walk-In Piercing">Walk-In Piercing</option>
           <option value="Freie Termine">Freie Termine</option>
           <option value="Neuer Schmuck">Neuer Schmuck</option>
@@ -306,35 +397,40 @@
         </select>
       </div>
       <div>
-        <label class="text-[11px] text-zinc-400 block mb-1">Nachrichtentext</label>
-        <textarea id="newsTextInput" rows="3" placeholder="z. B. Heute noch spontane Walk-In Slots für Piercings frei! Kommt vorbei in der Erfurter Str. 22." class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500"></textarea>
+        <label class="text-[11px] font-bold text-zinc-300 block mb-1">Nachrichtentext</label>
+        <textarea id="newsTextInput" rows="3" placeholder="z. B. Heute noch spontane Walk-In Slots für Piercings frei! Kommt vorbei in der Erfurter Str. 22." class="w-full bg-black border-2 border-zinc-700 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-red-500"></textarea>
       </div>
       <div class="flex gap-2">
-        <button onclick="publishNews()" class="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-xs font-bold text-white transition">
+        <button onclick="publishNews()" class="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 border-2 border-white text-xs font-black uppercase text-white transition">
           Veröffentlichen
         </button>
-        <button onclick="clearNews()" class="px-4 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-semibold text-zinc-300 transition">
+        <button onclick="clearNews()" class="px-4 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 border-2 border-zinc-600 text-xs font-extrabold text-zinc-200 transition">
           Löschen
         </button>
       </div>
     </div>
 
     <!-- TAB 4: COUNTER QR & PIN -->
-    <div id="panel-counter" class="hidden rounded-2xl bg-zinc-900 border border-zinc-800 p-4 space-y-4">
+    <div id="panel-counter" class="hidden rounded-2xl bg-neutral-900 border-2 border-zinc-700 p-4 space-y-4">
       <div class="text-center">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-300">Tresen-QR-Code für neue Kunden</h3>
-        <p class="text-[11px] text-zinc-500 mt-1">Diesen Code ausdrucken und am Empfang auslegen</p>
-        <div class="mt-3 inline-block bg-white p-4 rounded-2xl shadow-md">
+        <h3 class="text-xs font-black uppercase tracking-wider text-white">Tresen-QR-Code für neue Kunden</h3>
+        <p class="text-[11px] font-semibold text-zinc-400 mt-1">Diesen Code herunterladen, ausdrucken und am Empfang auslegen</p>
+        <div class="mt-3 inline-block bg-white p-4 rounded-2xl border-2 border-red-600">
           <div id="counterQrCode"></div>
         </div>
-        <p id="currentAppUrl" class="text-[10px] text-zinc-500 mt-2 break-all"></p>
+        <div class="mt-3">
+          <button onclick="downloadCounterQr()" class="px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 border-2 border-white text-xs font-black uppercase text-white transition active:translate-y-0.5">
+            ⬇️ Tresen-QR als Bild herunterladen
+          </button>
+        </div>
+        <p id="currentAppUrl" class="text-[10px] text-zinc-400 mt-2 break-all"></p>
       </div>
 
       <div class="pt-4 border-t border-zinc-800">
-        <label class="text-xs font-bold text-zinc-300 block mb-1.5">Studio-Code ändern (mind. 6 Stellen)</label>
+        <label class="text-xs font-black uppercase text-white block mb-1.5">Studio-Code ändern (mind. 6 Stellen)</label>
         <div class="flex gap-2">
-          <input id="newPinInput" type="password" inputmode="numeric" maxlength="8" placeholder="Neuer 6-stelliger Code" class="flex-1 bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white" />
-          <button onclick="updateStudioPin()" class="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-white">
+          <input id="newPinInput" type="password" inputmode="numeric" maxlength="8" placeholder="Neuer 6-stelliger Code" class="flex-1 bg-black border-2 border-zinc-700 rounded-xl px-3 py-2 text-xs font-bold text-white" />
+          <button onclick="updateStudioPin()" class="px-4 py-2 rounded-xl bg-white text-xs font-black uppercase text-black">
             Speichern
           </button>
         </div>
@@ -342,42 +438,105 @@
     </div>
   </section>
 
-  <!-- PIN MODAL -->
-  <div id="pinModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="w-full max-w-xs rounded-3xl bg-zinc-900 border border-zinc-800 p-6 space-y-4 shadow-2xl">
-      <div class="text-center">
-        <h3 class="text-base font-extrabold text-white">Studio-Kontrolle</h3>
-        <p class="text-xs text-zinc-400 mt-1">Bitte 6-stelligen Studio-Code eingeben</p>
+  <!-- PRIVACY & NEWS CONSENT MODAL (Shown once on first start, re-openable via top-right settings button) -->
+  <div id="consentModal" class="hidden fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
+    <div class="w-full max-w-sm rounded-3xl bg-neutral-950 border-2 border-white p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-red-600 border border-white flex items-center justify-center font-black text-xs text-white">DTP</div>
+          <h3 class="text-base font-black uppercase text-white">Datenschutz &amp; News</h3>
+        </div>
+        <button id="closeConsentXBtn" onclick="closeConsentModal()" class="hidden text-white hover:text-red-500 text-base font-black p-1">✕</button>
       </div>
-      <input id="pinInput" type="password" inputmode="numeric" maxlength="8" placeholder="••••••" onkeydown="if(event.key==='Enter') verifyPin()" class="w-full text-center tracking-[0.4em] text-lg font-bold bg-zinc-950 border border-zinc-800 rounded-2xl py-3 text-white focus:outline-none focus:border-red-500" />
-      <p id="pinError" class="hidden text-center text-xs text-red-400 font-medium">Falscher Code</p>
+
+      <div class="space-y-2.5 text-xs text-zinc-200 leading-relaxed">
+        <p>
+          <strong class="text-white">Datenschutzerklärung:</strong> Deine digitale Stempelkarte speichert ausschließlich eine anonyme Karten-ID (<span class="font-mono font-bold text-red-400">DTP-XXXX</span>) und deinen Stempelstand lokal auf deinem Gerät sowie verschlüsselt in unserer Studio-Cloud (Google Firebase Firestore), damit deine Stempel nicht verloren gehen. Es werden keine Klarnamen, E-Mail-Adressen oder Telefonnummern erhoben.
+        </p>
+      </div>
+
+      <!-- Interactive Toggle for News & Pop-up Messages -->
+      <div class="p-3.5 rounded-2xl bg-neutral-900 border-2 border-zinc-700 space-y-2">
+        <label class="flex items-start justify-between gap-3 cursor-pointer select-none">
+          <div class="space-y-0.5">
+            <span class="text-xs font-black text-white block">📢 Studio-News &amp; Pop-up-Nachrichten</span>
+            <span class="text-[11px] text-zinc-300 block leading-snug">Erhalte direkte Hinweise zu freien Walk-In Piercing-Slots, Aktionen und neuem Schmuck in der Karte.</span>
+          </div>
+          <input id="newsConsentCheckbox" type="checkbox" checked class="mt-1 w-5 h-5 rounded accent-red-600 cursor-pointer shrink-0" />
+        </label>
+      </div>
+
+      <p class="text-[10px] font-semibold text-zinc-400 leading-snug">
+        Du kannst diese Einwilligung jederzeit oben rechts über das Einstellungs-Symbol (⚙️) ändern oder widerrufen.
+      </p>
+
+      <button onclick="saveConsentSettings()" class="w-full py-3.5 rounded-2xl bg-red-600 hover:bg-red-500 border-2 border-white text-xs font-black uppercase tracking-wider text-white transition active:translate-y-0.5">
+        Bestätigen &amp; speichern
+      </button>
+    </div>
+  </div>
+
+  <!-- IMPRESSUM & DATENSCHUTZ MODAL -->
+  <div id="impressumModal" class="hidden fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
+    <div class="w-full max-w-sm rounded-3xl bg-neutral-950 border-2 border-white p-6 space-y-4 max-h-[85vh] overflow-y-auto">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-black uppercase text-white">Impressum &amp; Datenschutz</h3>
+        <button onclick="closeImpressumModal()" class="text-white hover:text-red-500 text-base font-black">✕</button>
+      </div>
+      <div class="space-y-3 text-xs text-zinc-200 leading-relaxed">
+        <div>
+          <p class="font-black uppercase text-white">Angaben gemäß § 5 TMG</p>
+          <p>Diablo Tattoo &amp; Piercing Weimar<br />Erfurter Str. 22<br />99423 Weimar</p>
+        </div>
+        <div>
+          <p class="font-black uppercase text-white">Teilnahmebedingungen Treuekarte</p>
+          <p>Das digitale Treueprogramm gilt ausschließlich für Piercing-Dienstleistungen bei Diablo Tattoo &amp; Piercing Weimar. Nach 5 gesammelten Piercing-Stempeln erhältst du <strong class="text-red-400">1 Gratis Piercing</strong> (gültig 1 Jahr ab Ausstellung, keine Barauszahlung).</p>
+        </div>
+        <div>
+          <p class="font-black uppercase text-white">Datenschutzhinweis</p>
+          <p>Es werden keine Klarnamen, E-Mail-Adressen oder Telefonnummern erhoben. Die Zuordnung erfolgt ausschließlich über eine zufällig generierte Kartennummer (<span class="font-mono text-red-400">DTP-XXXX</span>) in deinem Browser sowie in Google Firebase Firestore zur Synchronisation des Stempelstands.</p>
+        </div>
+      </div>
+      <button onclick="closeImpressumModal()" class="w-full py-3 rounded-xl bg-white text-xs font-black uppercase text-black">Schließen</button>
+    </div>
+  </div>
+
+  <!-- PIN MODAL -->
+  <div id="pinModal" class="hidden fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
+    <div class="w-full max-w-xs rounded-3xl bg-neutral-950 border-2 border-white p-6 space-y-4">
+      <div class="text-center">
+        <h3 class="text-base font-black uppercase text-white">Studio-Kontrolle</h3>
+        <p class="text-xs font-semibold text-zinc-400 mt-1">Bitte 6-stelligen Studio-Code eingeben</p>
+      </div>
+      <input id="pinInput" type="password" inputmode="numeric" maxlength="8" placeholder="••••••" onkeydown="if(event.key==='Enter') verifyPin()" class="w-full text-center tracking-[0.4em] text-lg font-black bg-black border-2 border-zinc-600 rounded-2xl py-3 text-white focus:outline-none focus:border-red-600" />
+      <p id="pinError" class="hidden text-center text-xs text-red-500 font-extrabold">Falscher Code</p>
       <div class="grid grid-cols-2 gap-2">
-        <button onclick="closePinModal()" class="py-2.5 rounded-xl bg-zinc-800 text-xs font-semibold text-zinc-300">Abbrechen</button>
-        <button onclick="verifyPin()" class="py-2.5 rounded-xl bg-red-600 text-xs font-bold text-white">Entsperren</button>
+        <button onclick="closePinModal()" class="py-2.5 rounded-xl bg-zinc-800 border border-zinc-600 text-xs font-extrabold text-zinc-200">Abbrechen</button>
+        <button onclick="verifyPin()" class="py-2.5 rounded-xl bg-red-600 border border-white text-xs font-black uppercase text-white">Entsperren</button>
       </div>
     </div>
   </div>
 
   <!-- INSTALL MODAL -->
-  <div id="installModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="w-full max-w-sm rounded-3xl bg-zinc-900 border border-zinc-800 p-6 space-y-4 shadow-2xl">
-      <h3 class="text-base font-extrabold text-white">Karte als App speichern</h3>
-      <div class="space-y-3 text-xs text-zinc-300 leading-relaxed">
-        <div class="p-3 rounded-2xl bg-zinc-950 border border-zinc-800">
-          <p class="font-bold text-white mb-1">🍎 iPhone (Safari)</p>
+  <div id="installModal" class="hidden fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
+    <div class="w-full max-w-sm rounded-3xl bg-neutral-950 border-2 border-white p-6 space-y-4">
+      <h3 class="text-base font-black uppercase text-white">Karte als App speichern</h3>
+      <div class="space-y-3 text-xs text-zinc-200 leading-relaxed">
+        <div class="p-3 rounded-2xl bg-neutral-900 border-2 border-zinc-700">
+          <p class="font-black text-white mb-1">🍎 iPhone (Safari)</p>
           <p>Tippe unten auf das <strong>Teilen-Symbol</strong> (Viereck mit Pfeil nach oben) und wähle <strong>„Zum Home-Bildschirm“</strong>.</p>
         </div>
-        <div class="p-3 rounded-2xl bg-zinc-950 border border-zinc-800">
-          <p class="font-bold text-white mb-1">🤖 Android (Chrome)</p>
+        <div class="p-3 rounded-2xl bg-neutral-900 border-2 border-zinc-700">
+          <p class="font-black text-white mb-1">🤖 Android (Chrome)</p>
           <p>Tippe oben rechts auf das <strong>Drei-Punkte-Menü</strong> und wähle <strong>„Zum Startbildschirm hinzufügen“</strong>.</p>
         </div>
       </div>
-      <button onclick="closeInstallModal()" class="w-full py-2.5 rounded-xl bg-red-600 text-xs font-bold text-white">Verstanden</button>
+      <button onclick="closeInstallModal()" class="w-full py-3 rounded-xl bg-red-600 border-2 border-white text-xs font-black uppercase text-white">Verstanden</button>
     </div>
   </div>
 
-  <!-- Toast Notification -->
-  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden px-4 py-2.5 rounded-full bg-zinc-800 border border-zinc-700 text-xs font-semibold text-white shadow-xl"></div>
+  <!-- High-Contrast Toast Notification -->
+  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden px-4 py-2.5 rounded-xl bg-white border-2 border-red-600 text-xs font-black text-black shadow-xl"></div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -406,6 +565,7 @@
     let isCardFlipped = false;
     let logoTapCount = 0;
     let logoTapTimer = null;
+    let latestStudioNews = { newsTag: "Studio-Info", newsText: "", newsDate: "" };
 
     let myCardId = localStorage.getItem("dtp_piercing_card_id");
     if (!myCardId) {
@@ -426,6 +586,92 @@
     const localCardsCache = {
       [myCardId]: myCardData
     };
+
+    /* Dynamic Height Synchronization so neither Front nor Back ever has empty dead gaps */
+    window.syncFlipContainerHeight = () => {
+      const flipInner = document.getElementById("cardFlipInner");
+      const front = document.getElementById("cardFront");
+      const back = document.getElementById("cardBack");
+      if (!flipInner || !front || !back) return;
+      const activeFace = isCardFlipped ? back : front;
+      const targetHeight = activeFace.offsetHeight;
+      if (targetHeight > 0) {
+        flipInner.style.height = `${targetHeight}px`;
+      }
+    };
+
+    window.flipCard = () => {
+      const flipInner = document.getElementById("cardFlipInner");
+      isCardFlipped = !isCardFlipped;
+      flipInner.classList.toggle("is-flipped", isCardFlipped);
+      window.syncFlipContainerHeight();
+    };
+
+    if (typeof ResizeObserver !== "undefined") {
+      const cardResizeObserver = new ResizeObserver(() => {
+        window.syncFlipContainerHeight();
+      });
+      const frontEl = document.getElementById("cardFront");
+      const backEl = document.getElementById("cardBack");
+      if (frontEl) cardResizeObserver.observe(frontEl);
+      if (backEl) cardResizeObserver.observe(backEl);
+    }
+    window.addEventListener("resize", window.syncFlipContainerHeight);
+    window.addEventListener("load", window.syncFlipContainerHeight);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => window.syncFlipContainerHeight());
+    }
+
+    function isNewsConsentGiven() {
+      const enabled = localStorage.getItem("dtp_news_enabled");
+      if (enabled !== null) return enabled === "true";
+      const optIn = localStorage.getItem("dtp_news_opt_in");
+      if (optIn !== null) return optIn === "true";
+      return true;
+    }
+
+    function applyNewsVisibility() {
+      const banner = document.getElementById("newsBanner");
+      if (isNewsConsentGiven() && latestStudioNews.newsText && latestStudioNews.newsText.trim() !== "") {
+        document.getElementById("newsTag").textContent = latestStudioNews.newsTag || "Studio-Info";
+        document.getElementById("newsText").textContent = latestStudioNews.newsText;
+        document.getElementById("newsDate").textContent = latestStudioNews.newsDate || "";
+        banner.classList.remove("hidden");
+      } else {
+        banner.classList.add("hidden");
+      }
+    }
+
+    window.openConsentModal = (allowClose = false) => {
+      document.getElementById("newsConsentCheckbox").checked = isNewsConsentGiven();
+      const closeBtn = document.getElementById("closeConsentXBtn");
+      if (allowClose && localStorage.getItem("dtp_privacy_accepted") === "true") {
+        closeBtn.classList.remove("hidden");
+      } else {
+        closeBtn.classList.add("hidden");
+      }
+      document.getElementById("consentModal").classList.remove("hidden");
+    };
+
+    window.closeConsentModal = () => {
+      if (localStorage.getItem("dtp_privacy_accepted") === "true") {
+        document.getElementById("consentModal").classList.add("hidden");
+      }
+    };
+
+    window.saveConsentSettings = () => {
+      const newsChecked = document.getElementById("newsConsentCheckbox").checked;
+      localStorage.setItem("dtp_privacy_accepted", "true");
+      localStorage.setItem("dtp_news_enabled", newsChecked ? "true" : "false");
+      localStorage.setItem("dtp_news_opt_in", newsChecked ? "true" : "false");
+      document.getElementById("consentModal").classList.add("hidden");
+      applyNewsVisibility();
+      showToast(newsChecked ? "Einstellungen gespeichert (News aktiv)" : "Einstellungen gespeichert (News deaktiviert)");
+    };
+
+    if (localStorage.getItem("dtp_privacy_accepted") !== "true") {
+      openConsentModal(false);
+    }
 
     window.handleLogoTap = () => {
       logoTapCount++;
@@ -449,11 +695,11 @@
       isCloudConnected = connected;
       const badge = document.getElementById("cloudStatusBadge");
       if (connected) {
-        badge.className = "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/25";
-        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Cloud Live`;
+        badge.className = "inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-black uppercase bg-emerald-400 text-black";
+        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-black"></span> Cloud Live`;
       } else {
-        badge.className = "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-800 text-zinc-400 border border-zinc-700";
-        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-zinc-500"></span> Lokal`;
+        badge.className = "inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-black uppercase bg-zinc-800 text-zinc-300 border border-zinc-600";
+        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-zinc-400"></span> Lokal`;
       }
     }
 
@@ -468,20 +714,29 @@
       const remaining = Math.max(0, 5 - data.stamps);
       const rewardBadge = document.getElementById("rewardStatusBadge");
       if (data.stamps >= 5) {
-        rewardBadge.textContent = "🎉 Prämie bereit!";
-        rewardBadge.className = "text-[11px] font-bold text-emerald-400";
+        rewardBadge.textContent = "🎉 PRÄMIE BEREIT!";
+        rewardBadge.className = "text-[11px] font-black uppercase text-emerald-700 shrink-0";
       } else {
         rewardBadge.textContent = `Noch ${remaining} Piercing${remaining === 1 ? "" : "s"}`;
-        rewardBadge.className = "text-[11px] font-semibold text-zinc-400";
+        rewardBadge.className = "text-[11px] font-black uppercase text-red-600 shrink-0";
       }
 
       const googleStatus = document.getElementById("googleBonusStatus");
-      if (data.googleBonusGranted) {
-        googleStatus.innerHTML = `<span class="text-emerald-400 font-semibold">⭐ Google-Bonus erhalten</span>`;
-      } else if (data.googleClicked) {
-        googleStatus.innerHTML = `<span class="text-amber-400">⭐ Bewertung angeklickt (im Studio bestätigen)</span>`;
+      const googleBtn = document.getElementById("googleReviewBtn");
+      const googleCompletedBadge = document.getElementById("googleReviewCompletedBadge");
+
+      if (data.googleBonusGranted === true) {
+        googleStatus.innerHTML = `<span class="text-emerald-400 font-extrabold">⭐ Google-Bonus: Einmalig eingelöst</span>`;
+        if (googleBtn) googleBtn.classList.add("hidden");
+        if (googleCompletedBadge) googleCompletedBadge.classList.remove("hidden");
       } else {
-        googleStatus.textContent = "⭐ Google-Bewertung: +1 Extra-Stempel möglich";
+        if (googleBtn) googleBtn.classList.remove("hidden");
+        if (googleCompletedBadge) googleCompletedBadge.classList.add("hidden");
+        if (data.googleClicked) {
+          googleStatus.innerHTML = `<span class="text-amber-400 font-extrabold">⭐ Bewertung angeklickt (im Studio bestätigen)</span>`;
+        } else {
+          googleStatus.textContent = "⭐ Google-Bewertung: +1 Extra-Stempel möglich";
+        }
       }
 
       const grid = document.getElementById("stampsGrid");
@@ -490,13 +745,15 @@
         const filled = i <= data.stamps;
         const div = document.createElement("div");
         div.className = filled
-          ? "aspect-square rounded-2xl stamp-active flex flex-col items-center justify-center text-white font-extrabold text-sm border border-red-400/40 transition-all"
-          : "aspect-square rounded-2xl bg-white/[0.03] border border-dashed border-white/15 flex flex-col items-center justify-center text-zinc-600 font-bold text-xs";
+          ? "aspect-square rounded-2xl stamp-active-bold flex flex-col items-center justify-center text-white font-black text-sm transition-transform"
+          : "aspect-square rounded-2xl bg-neutral-900 border-2 border-dashed border-zinc-600 flex flex-col items-center justify-center text-zinc-400 font-black text-sm";
         div.innerHTML = filled
-          ? `<span class="text-base leading-none">💎</span><span class="text-[9px] mt-1 uppercase tracking-wider opacity-90">#${i}</span>`
+          ? `<span class="text-lg sm:text-xl leading-none">💀</span><span class="text-[10px] mt-1 font-black tracking-wider">#${i}</span>`
           : `<span>${i}</span>`;
         grid.appendChild(div);
       }
+
+      requestAnimationFrame(() => window.syncFlipContainerHeight());
     }
 
     function generateQrCodes() {
@@ -505,13 +762,28 @@
       custQr.innerHTML = "";
       counterQr.innerHTML = "";
 
-      // Large, prominent 150x150px customer QR code on card front
-      new QRCode(custQr, { text: myCardId, width: 150, height: 150, colorDark: "#09090b", colorLight: "#ffffff" });
+      new QRCode(custQr, { text: myCardId, width: 150, height: 150, colorDark: "#000000", colorLight: "#ffffff" });
 
-      // Counter QR code fixed to live GitHub Pages URL
       document.getElementById("currentAppUrl").textContent = LIVE_APP_URL;
-      new QRCode(counterQr, { text: LIVE_APP_URL, width: 170, height: 170, colorDark: "#09090b", colorLight: "#ffffff" });
+      new QRCode(counterQr, { text: LIVE_APP_URL, width: 200, height: 200, colorDark: "#000000", colorLight: "#ffffff" });
+
+      requestAnimationFrame(() => window.syncFlipContainerHeight());
     }
+
+    window.downloadCounterQr = () => {
+      const canvas = document.querySelector("#counterQrCode canvas");
+      const img = document.querySelector("#counterQrCode img");
+      const dataUrl = canvas ? canvas.toDataURL("image/png") : (img ? img.src : null);
+      if (!dataUrl) return showToast("QR-Code wird noch geladen...");
+
+      const link = document.createElement("a");
+      link.href = dataUrl;
+      link.download = "Diablo-Piercing-Tresen-QR.png";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast("Tresen-QR-Code heruntergeladen!");
+    };
 
     function renderLocalCustomersList() {
       const list = document.getElementById("customersList");
@@ -520,17 +792,17 @@
       list.innerHTML = "";
       cards.forEach((c) => {
         const item = document.createElement("div");
-        item.className = "flex items-center justify-between p-2.5 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 cursor-pointer";
+        item.className = "flex items-center justify-between p-2.5 rounded-xl bg-black border-2 border-zinc-800 hover:border-white cursor-pointer";
         item.onclick = () => {
           switchAdminTab("scan");
           loadCardForAdmin(c.id);
         };
         item.innerHTML = `
           <div>
-            <span class="font-mono text-xs font-bold text-white">${c.id}</span>
-            <span class="text-[10px] text-zinc-500 block">${c.googleBonusGranted ? "⭐ Google-Bonus aktiv" : "Standard"}</span>
+            <span class="font-mono text-xs font-black text-white">${c.id}</span>
+            <span class="text-[10px] font-bold text-zinc-400 block">${c.googleBonusGranted ? "⭐ Google-Bonus aktiv" : "Standard"}</span>
           </div>
-          <span class="px-2.5 py-1 rounded-lg bg-red-500/15 text-red-400 text-xs font-bold">${c.stamps} / 5</span>
+          <span class="px-2.5 py-1 rounded-lg bg-red-600 text-white text-xs font-black">${c.stamps} / 5</span>
         `;
         list.appendChild(item);
       });
@@ -540,6 +812,7 @@
       renderCustomerCard(myCardData);
       generateQrCodes();
       renderLocalCustomersList();
+      requestAnimationFrame(() => window.syncFlipContainerHeight());
 
       try {
         const cardRef = doc(db, "cards", myCardId);
@@ -562,15 +835,12 @@
             if (s.pin && s.pin.length >= 6) {
               studioPin = s.pin;
             }
-            const banner = document.getElementById("newsBanner");
-            if (s.newsText && s.newsText.trim() !== "") {
-              document.getElementById("newsTag").textContent = s.newsTag || "Studio-Info";
-              document.getElementById("newsText").textContent = s.newsText;
-              document.getElementById("newsDate").textContent = s.newsDate || "";
-              banner.classList.remove("hidden");
-            } else {
-              banner.classList.add("hidden");
-            }
+            latestStudioNews = {
+              newsTag: s.newsTag || "Studio-Info",
+              newsText: s.newsText || "",
+              newsDate: s.newsDate || ""
+            };
+            applyNewsVisibility();
           }
         });
 
@@ -583,17 +853,17 @@
             const c = d.data();
             localCardsCache[c.id] = c;
             const item = document.createElement("div");
-            item.className = "flex items-center justify-between p-2.5 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 cursor-pointer";
+            item.className = "flex items-center justify-between p-2.5 rounded-xl bg-black border-2 border-zinc-800 hover:border-white cursor-pointer";
             item.onclick = () => {
               switchAdminTab("scan");
               loadCardForAdmin(c.id);
             };
             item.innerHTML = `
               <div>
-                <span class="font-mono text-xs font-bold text-white">${c.id}</span>
-                <span class="text-[10px] text-zinc-500 block">${c.googleBonusGranted ? "⭐ Google-Bonus aktiv" : "Standard"}</span>
+                <span class="font-mono text-xs font-black text-white">${c.id}</span>
+                <span class="text-[10px] font-bold text-zinc-400 block">${c.googleBonusGranted ? "⭐ Google-Bonus aktiv" : "Standard"}</span>
               </div>
-              <span class="px-2.5 py-1 rounded-lg bg-red-500/15 text-red-400 text-xs font-bold">${c.stamps} / 5</span>
+              <span class="px-2.5 py-1 rounded-lg bg-red-600 text-white text-xs font-black">${c.stamps} / 5</span>
             `;
             list.appendChild(item);
           });
@@ -604,21 +874,8 @@
       }
     }
 
-    window.flipCard = () => {
-      const front = document.getElementById("cardFront");
-      const back = document.getElementById("cardBack");
-      isCardFlipped = !isCardFlipped;
-
-      if (isCardFlipped) {
-        front.classList.add("hidden");
-        back.classList.remove("hidden");
-      } else {
-        back.classList.add("hidden");
-        front.classList.remove("hidden");
-      }
-    };
-
     window.markGoogleClicked = async () => {
+      if (myCardData.googleBonusGranted === true) return;
       myCardData.googleClicked = true;
       myCardData.updatedAt = Date.now();
       renderCustomerCard(myCardData);
@@ -660,6 +917,7 @@
       }
       document.getElementById("adminView").classList.add("hidden");
       document.getElementById("customerView").classList.remove("hidden");
+      requestAnimationFrame(() => window.syncFlipContainerHeight());
     };
 
     window.switchAdminTab = (tab) => {
@@ -739,14 +997,16 @@
       document.getElementById("adminCardStampsBadge").textContent = `${selectedAdminCardData.stamps} / 5 Stempel`;
 
       const gBtn = document.getElementById("adminGoogleBonusBtn");
-      if (selectedAdminCardData.googleBonusGranted) {
-        gBtn.textContent = "✓ Google-Bonus bereits vergeben";
+      if (selectedAdminCardData.googleBonusGranted === true) {
+        gBtn.textContent = "🔒 Google-Bonus bereits vergeben (einmalig pro Karte)";
         gBtn.disabled = true;
-        gBtn.classList.add("opacity-50");
+        gBtn.setAttribute("aria-disabled", "true");
+        gBtn.className = "w-full py-2.5 px-3 rounded-xl bg-zinc-800 border-2 border-zinc-700 text-xs font-extrabold text-zinc-500 opacity-60 cursor-not-allowed pointer-events-none select-none";
       } else {
         gBtn.textContent = "⭐ Google-Bewertung bestätigen (+1 Bonus-Stempel)";
         gBtn.disabled = false;
-        gBtn.classList.remove("opacity-50");
+        gBtn.removeAttribute("aria-disabled");
+        gBtn.className = "w-full py-2.5 px-3 rounded-xl bg-amber-400 hover:bg-amber-300 border-2 border-white text-xs font-black text-black transition";
       }
 
       document.getElementById("adminRedeemBox").classList.toggle("hidden", selectedAdminCardData.stamps < 5);
@@ -771,7 +1031,27 @@
     };
 
     window.adminGrantGoogleBonus = async () => {
-      if (!selectedAdminCardData || selectedAdminCardData.googleBonusGranted) return;
+      if (!selectedAdminCardData) return;
+      if (selectedAdminCardData.googleBonusGranted === true) {
+        showToast("Google-Bonus wurde für diese Karte bereits einmalig vergeben.");
+        updateAdminCardUI();
+        return;
+      }
+
+      if (isCloudConnected) {
+        try {
+          const latestSnap = await getDoc(doc(db, "cards", selectedAdminCardData.id));
+          if (latestSnap.exists() && latestSnap.data().googleBonusGranted === true) {
+            selectedAdminCardData = latestSnap.data();
+            localCardsCache[selectedAdminCardData.id] = selectedAdminCardData;
+            updateAdminCardUI();
+            if (selectedAdminCardData.id === myCardId) renderCustomerCard(selectedAdminCardData);
+            showToast("Google-Bonus wurde bereits einmalig vergeben.");
+            return;
+          }
+        } catch (e) {}
+      }
+
       selectedAdminCardData.googleBonusGranted = true;
       selectedAdminCardData.stamps = Math.min(5, selectedAdminCardData.stamps + 1);
       selectedAdminCardData.updatedAt = Date.now();
@@ -781,17 +1061,19 @@
       if (selectedAdminCardData.id === myCardId) renderCustomerCard(selectedAdminCardData);
       if (isCloudConnected) {
         try {
-          await setDoc(doc(db, "cards", selectedAdminCardData.id), selectedAdminCardData);
+          await setDoc(doc(db, "cards", selectedAdminCardData.id), selectedAdminCardData, { merge: true });
         } catch (e) {}
       } else {
         renderLocalCustomersList();
       }
-      showToast("⭐ Google-Bonus (+1 Stempel) gutgeschrieben!");
+      showToast("⭐ Google-Bonus (+1 Stempel) einmalig gutgeschrieben!");
     };
 
     window.adminRedeemReward = async (rewardName) => {
       if (!selectedAdminCardData || selectedAdminCardData.stamps < 5) return;
+      const preserveGoogleBonus = Boolean(selectedAdminCardData.googleBonusGranted);
       selectedAdminCardData.stamps = 0;
+      selectedAdminCardData.googleBonusGranted = preserveGoogleBonus;
       selectedAdminCardData.redeemedCount = (selectedAdminCardData.redeemedCount || 0) + 1;
       selectedAdminCardData.updatedAt = Date.now();
       localCardsCache[selectedAdminCardData.id] = selectedAdminCardData;
@@ -800,7 +1082,7 @@
       if (selectedAdminCardData.id === myCardId) renderCustomerCard(selectedAdminCardData);
       if (isCloudConnected) {
         try {
-          await setDoc(doc(db, "cards", selectedAdminCardData.id), selectedAdminCardData);
+          await setDoc(doc(db, "cards", selectedAdminCardData.id), selectedAdminCardData, { merge: true });
         } catch (e) {}
       } else {
         renderLocalCustomersList();
@@ -814,10 +1096,8 @@
       if (!text) return showToast("Bitte erst einen Text eingeben");
       const today = new Date().toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" });
 
-      document.getElementById("newsTag").textContent = tag;
-      document.getElementById("newsText").textContent = text;
-      document.getElementById("newsDate").textContent = today;
-      document.getElementById("newsBanner").classList.remove("hidden");
+      latestStudioNews = { newsTag: tag, newsText: text, newsDate: today };
+      applyNewsVisibility();
 
       if (isCloudConnected) {
         try {
@@ -829,7 +1109,8 @@
 
     window.clearNews = async () => {
       document.getElementById("newsTextInput").value = "";
-      document.getElementById("newsBanner").classList.add("hidden");
+      latestStudioNews = { newsTag: "Studio-Info", newsText: "", newsDate: "" };
+      applyNewsVisibility();
       if (isCloudConnected) {
         try {
           await setDoc(doc(db, "settings", "studio"), { newsText: "", pin: studioPin }, { merge: true });
@@ -854,6 +1135,8 @@
 
     window.openInstallModal = () => document.getElementById("installModal").classList.remove("hidden");
     window.closeInstallModal = () => document.getElementById("installModal").classList.add("hidden");
+    window.openImpressumModal = () => document.getElementById("impressumModal").classList.remove("hidden");
+    window.closeImpressumModal = () => document.getElementById("impressumModal").classList.add("hidden");
 
     initCloudSync();
   </script>
